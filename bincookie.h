@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#define binarycookies_is_secure(cookie_ptr) (cookie_ptr->flags == secure || cookie_ptr->flags == secure_http_only)
+
 typedef enum {
     secure = 1,
     http_only = 1 << 2,
