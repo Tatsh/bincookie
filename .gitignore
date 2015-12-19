@@ -8,6 +8,7 @@
 *.so.*
 *.pyc
 *.pyo
+*.dylib
 __pycache__/
 *.egg-info/
 
