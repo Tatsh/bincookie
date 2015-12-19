@@ -22,7 +22,7 @@ typedef struct {
     char creation_date_str[30];
     double expiration_date;
     char expiration_date_str[30];
-    char *url;
+    char *domain;
     char *name;
     char *path;
     char *value;

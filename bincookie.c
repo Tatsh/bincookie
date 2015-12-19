@@ -130,8 +130,8 @@ binarycookies_t *binarycookies_init(const char *file_path) {
             page_ptr = cfile->raw_pages[i] + cookie_offsets[j] + url_offset;
             slen = name_offset - url_offset;
             if (slen > 0) {
-                cookie->url = malloc(slen);
-                memcpy(cookie->url, page_ptr, slen);
+                cookie->domain = malloc(slen);
+                memcpy(cookie->domain, page_ptr, slen);
             }
 
             page_ptr = cfile->raw_pages[i] + cookie_offsets[j] + name_offset;
@@ -184,7 +184,7 @@ void binarycookies_free(binarycookies_t *cfile) {
         free(cfile->raw_pages[i]);
 
         for (j = 0; j < cfile->pages[i]->number_of_cookies; j++) {
-            free(cfile->pages[i]->cookies[j]->url);
+            free(cfile->pages[i]->cookies[j]->domain);
             free(cfile->pages[i]->cookies[j]->name);
             free(cfile->pages[i]->cookies[j]->path);
             free(cfile->pages[i]->cookies[j]->value);
