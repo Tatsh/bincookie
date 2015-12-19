@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
 
     binarycookies_t *bc = binarycookies_init(argv[1]);
     unsigned int i, j;
-    uint32_t flags;
+    binarycookies_flag flags;
 
     // Output in Netscape cookies.txt format
     for (i = 0; i < bc->num_pages; i++) {
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
                    bc->pages[i]->cookies[j]->url,
                    bc->pages[i]->cookies[j]->url[0] == '.' ? "TRUE" : "FALSE",
                    bc->pages[i]->cookies[j]->path,
-                   flags == 1 || flags == 5 ? "TRUE" : "FALSE",
+                   flags == secure || flags == secure_http_only ? "TRUE" : "FALSE",
                    bc->pages[i]->cookies[j]->expiration_date,
                    bc->pages[i]->cookies[j]->name,
                    bc->pages[i]->cookies[j]->value);
