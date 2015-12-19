@@ -1,0 +1,192 @@
+// Based on the Python script by Satishb3 <satishb3@securitylearn.net>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+#include "bincookie.h"
+
+#define APPLE_EPOCH_OFFSET 978307200
+
+binarycookies_t *binarycookies_init(const char *file_path) {
+    unsigned int i, j;
+    uint32_t *cookie_offsets;
+    size_t len;
+    char magic[4];
+
+    FILE *binary_file = fopen(file_path, "rb");
+
+    if (!binary_file) {
+        fprintf(stderr, "Unable to open file: %s\n", file_path);
+        return NULL;
+    }
+
+    fread(magic, 4, 1, binary_file);
+
+    if (strncmp(magic, "cook", 4)) {
+        fprintf(stderr, "Not a correctly formatted file (incorrect magic)\n");
+        return NULL;
+    }
+
+    binarycookies_t *cfile = malloc(sizeof(binarycookies_t));
+    memcpy(cfile->magic, magic, 4);
+
+    fread(&cfile->num_pages, 4, 1, binary_file);
+    cfile->num_pages = __builtin_bswap32(cfile->num_pages); // FIXME
+    cfile->raw_pages = malloc(sizeof(char *) * cfile->num_pages);
+    cfile->pages = malloc(sizeof(binarycookies_page_t *) * cfile->num_pages);
+
+    cfile->page_sizes = malloc(sizeof(uint32_t) * cfile->num_pages);
+    for (i = 0; i < cfile->num_pages; i++) {
+        uint32_t page_size;
+
+        fread(&page_size, 4, 1, binary_file);
+        cfile->page_sizes[i] = __builtin_bswap32(page_size); // FIXME
+    }
+
+    for (i = 0; i < cfile->num_pages; i++) {
+        char *ps = malloc(cfile->page_sizes[i]);
+
+        fread(ps, cfile->page_sizes[i], 1, binary_file);
+        cfile->raw_pages[i] = ps;
+    }
+
+    fclose(binary_file);
+
+    // Read
+    for (i = 0; i < cfile->num_pages; i++) {
+        binarycookies_page_t *page = malloc(sizeof(binarycookies_page_t));
+        memcpy(page->unk1, cfile->raw_pages[i], 4);
+
+        char *page_ptr = cfile->raw_pages[i] + 4; // skip 4 bytes, always 0x0 0x0 0x1 0x0
+
+        memcpy(&page->number_of_cookies, page_ptr, sizeof(uint32_t));
+        page_ptr += sizeof(uint32_t);
+
+        cookie_offsets = malloc(sizeof(uint32_t) * page->number_of_cookies);
+        page->cookies = malloc(sizeof(binarycookies_cookie_t) * page->number_of_cookies);
+        for (j = 0; j < page->number_of_cookies; j++) {
+            uint32_t cookie_offset;
+
+            memcpy(&cookie_offset, page_ptr, sizeof(uint32_t));
+            cookie_offsets[j] = cookie_offset;
+            page_ptr += sizeof(uint32_t);
+        }
+
+        page_ptr += sizeof(uint32_t); // end of page header
+
+        for (j = 0; j < page->number_of_cookies; j++) {
+            page_ptr = cfile->raw_pages[i] + cookie_offsets[j];
+            binarycookies_cookie_t *cookie = malloc(sizeof(binarycookies_cookie_t));
+            page->cookies[j] = cookie;
+
+            memcpy(cookie, page_ptr, sizeof(uint32_t) + 4 + sizeof(uint32_t) + 4);
+            page_ptr += sizeof(uint32_t) + 4 + sizeof(uint32_t) + 4;
+
+            switch (cookie->flags) {
+                case 1:
+                    strncpy(cookie->flags_str, "Secure", 6);
+                    break;
+
+                case 4:
+                    strncpy(cookie->flags_str, "HttpOnly", 8);
+                    break;
+
+                case 5:
+                    strncpy(cookie->flags_str, "Secure; HttpOnly", 16);
+                    break;
+
+                default:
+                    break;
+            }
+
+            uint32_t url_offset;
+            memcpy(&url_offset, page_ptr, sizeof(uint32_t));
+            page_ptr += sizeof(uint32_t);
+
+            uint32_t name_offset;
+            memcpy(&name_offset, page_ptr, sizeof(uint32_t));
+            page_ptr += sizeof(uint32_t);
+
+            uint32_t path_offset;
+            memcpy(&path_offset, page_ptr, sizeof(uint32_t));
+            page_ptr += sizeof(uint32_t);
+
+            uint32_t value_offset;
+            memcpy(&value_offset, page_ptr, sizeof(uint32_t));
+            page_ptr += sizeof(uint32_t);
+
+            page_ptr += sizeof(uint32_t) * 2; // end of cookie
+
+            memcpy(&cookie->expiration_date, page_ptr, sizeof(double));
+            cookie->expiration_date += APPLE_EPOCH_OFFSET;
+            page_ptr += sizeof(double);
+
+            memcpy(&cookie->creation_date, page_ptr, sizeof(double));
+            cookie->creation_date += APPLE_EPOCH_OFFSET;
+            page_ptr += sizeof(double);
+
+            page_ptr = cfile->raw_pages[i] + cookie_offsets[j] + url_offset;
+            len = name_offset - url_offset;
+            cookie->url = malloc(len);
+            memcpy(cookie->url, page_ptr, len);
+
+            page_ptr = cfile->raw_pages[i] + cookie_offsets[j] + name_offset;
+            len = path_offset - name_offset;
+            cookie->name = malloc(len);
+            memcpy(cookie->name, page_ptr, len);
+
+            page_ptr = cfile->raw_pages[i] + cookie_offsets[j] + path_offset;
+            len = value_offset - path_offset;
+            cookie->path = malloc(len);
+            memcpy(cookie->path, page_ptr, len);
+
+            page_ptr = cfile->raw_pages[i] + cookie_offsets[j] + value_offset;
+            len = 0;
+            int k = 0;
+            while (page_ptr[k] != 0) {
+                len += 1;
+                k++;
+            }
+            cookie->value = malloc(len);
+            memcpy(cookie->value, page_ptr, len);
+
+            time_t tmp2 = (time_t)cookie->expiration_date;
+            struct tm *tmp = gmtime(&tmp2);
+            strftime(cookie->expiration_date_str, sizeof(cookie->expiration_date_str), "%Y-%m-%d %H:%m:%S", tmp);
+
+            tmp2 = (time_t)cookie->creation_date;
+            tmp = gmtime(&tmp2);
+            strftime(cookie->creation_date_str, sizeof(cookie->creation_date_str), "%Y-%m-%d %H:%m:%S", tmp);
+        }
+
+        free(cookie_offsets);
+
+        cfile->pages[i] = page;
+    }
+
+    return cfile;
+}
+
+void binarycookies_free(binarycookies_t *cfile) {
+    unsigned int i, j;
+
+    for (i = 0; i < cfile->num_pages; i++) {
+        free(cfile->raw_pages[i]);
+
+        for (j = 0; j < cfile->pages[i]->number_of_cookies; j++) {
+            free(cfile->pages[i]->cookies[j]->url);
+            free(cfile->pages[i]->cookies[j]->name);
+            free(cfile->pages[i]->cookies[j]->path);
+            free(cfile->pages[i]->cookies[j]->value);
+            free(cfile->pages[i]->cookies[j]);
+        }
+        free(cfile->pages[i]->cookies);
+        free(cfile->pages[i]);
+    }
+    free(cfile->pages);
+    free(cfile->raw_pages);
+    free(cfile->page_sizes);
+    free(cfile);
+}
