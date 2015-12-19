@@ -14,6 +14,11 @@
 #define __builtin_bswap32 _byteswap_ulong
 #endif // _MSC_VER
 
+#if !defined(_MSC_VER)
+#define EXPORT __attribute__((visibility("default")))
+#endif
+
+EXPORT
 binarycookies_t *binarycookies_init(const char *file_path) {
     unsigned int i, j;
     signed int slen;
@@ -182,6 +187,7 @@ binarycookies_t *binarycookies_init(const char *file_path) {
     return cfile;
 }
 
+EXPORT
 void binarycookies_free(binarycookies_t *cfile) {
     unsigned int i, j;
 
