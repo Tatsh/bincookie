@@ -12,11 +12,10 @@
 // https://msdn.microsoft.com/en-us/library/a3140177.aspx
 #if defined(_MSC_VER)
 #define __builtin_bswap32 _byteswap_ulong
-#endif // _MSC_VER
-
-#if !defined(_MSC_VER)
+#define EXPORT
+#else
 #define EXPORT __attribute__((visibility("default")))
-#endif
+#endif // _MSC_VER
 
 EXPORT
 binarycookies_t *binarycookies_init(const char *file_path) {
