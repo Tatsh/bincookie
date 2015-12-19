@@ -3,10 +3,16 @@
 
 #include <stdint.h>
 
+typedef enum {
+    secure = 1,
+    http_only = 1 << 2,
+    secure_http_only = 5,
+} binarycookies_flag;
+
 typedef struct {
     uint32_t size;
     unsigned char unk1[4];
-    uint32_t flags;
+    binarycookies_flag flags;
     unsigned char unk2[4];
 
     char flags_str[16];

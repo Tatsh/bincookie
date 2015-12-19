@@ -85,15 +85,15 @@ binarycookies_t *binarycookies_init(const char *file_path) {
             page_ptr += sizeof(uint32_t) + 4 + sizeof(uint32_t) + 4;
 
             switch (cookie->flags) {
-                case 1:
+                case secure:
                     strncpy(cookie->flags_str, "Secure", 6);
                     break;
 
-                case 4:
+                case http_only:
                     strncpy(cookie->flags_str, "HttpOnly", 8);
                     break;
 
-                case 5:
+                case secure_http_only:
                     strncpy(cookie->flags_str, "Secure; HttpOnly", 16);
                     break;
 
