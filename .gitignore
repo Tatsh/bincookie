@@ -5,6 +5,7 @@
 *.exe
 *.o
 *.so
+*.so.*
 *.pyc
 *.pyo
 __pycache__/
@@ -31,4 +32,5 @@ __pycache__/
 ehthumbs.db
 Thumbs.db
 
-bincookie
+# For this project
+readbincook
