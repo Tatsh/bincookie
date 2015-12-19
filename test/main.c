@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
             // domain, flag, path, secure, expiration, name, value
             printf("%s\t%s\t%s\t%s\t%.f\t%s\t%s\n",
                    bc->pages[i]->cookies[j]->domain,
-                   bc->pages[i]->cookies[j]->domain[0] == '.' ? "TRUE" : "FALSE",
+                   binarycookies_domain_access_full(bc->pages[i]->cookies[j]) ? "TRUE" : "FALSE",
                    bc->pages[i]->cookies[j]->path,
                    binarycookies_is_secure(bc->pages[i]->cookies[j]) ? "TRUE" : "FALSE",
                    bc->pages[i]->cookies[j]->expiration_date,
