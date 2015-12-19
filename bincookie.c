@@ -38,7 +38,7 @@ binarycookies_t *binarycookies_init(const char *file_path) {
     memcpy(cfile->magic, magic, 4);
 
     fread(&cfile->num_pages, 4, 1, binary_file);
-    cfile->num_pages = __builtin_bswap32(cfile->num_pages); // FIXME
+    cfile->num_pages = __builtin_bswap32(cfile->num_pages);
     cfile->raw_pages = malloc(sizeof(char *) * cfile->num_pages);
     cfile->pages = malloc(sizeof(binarycookies_page_t *) * cfile->num_pages);
 
@@ -47,7 +47,7 @@ binarycookies_t *binarycookies_init(const char *file_path) {
         uint32_t page_size;
 
         fread(&page_size, 4, 1, binary_file);
-        cfile->page_sizes[i] = __builtin_bswap32(page_size); // FIXME
+        cfile->page_sizes[i] = __builtin_bswap32(page_size);
     }
 
     for (i = 0; i < cfile->num_pages; i++) {
