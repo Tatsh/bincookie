@@ -27,7 +27,7 @@ $(LIBNAME).$(LIBEXTENSION).$(LIBVERSION): $(OBJECTS)
 	$(CC) -shared -Wl,-soname,$(LIBNAME).$(LIBEXTENSION).$(LIBVERSION_SHORT) -o $(LIBNAME).$(LIBEXTENSION).$(LIBVERSION) $(OBJECTS)
 
 $(OBJECTS):%.o:%.c
-	$(CC) $(CFLAGS) -fPIC -c $< -o $@
+	$(CC) $(CFLAGS) -fvisibility=hidden -fPIC -c $< -o $@
 
 dylib-test: readbincook-dylib
 
@@ -40,4 +40,4 @@ readbincook-dylib: dylib
 	$(CC) -I. $(CFLAGS) -L. -o readbincook test/main.c $(LIBNAME).A.dylib
 
 clean:
-	rm -f $(LIBNAME).$(LIBEXTENSION)* $(LIBNAME).*.dylib readbincook $(DESTDIR)/$(LIBNAME).$(LIBEXTENSION)* $(DESTDIR)/$(LIBNAME).*.dylib
+	rm -f $(OBJECTS) $(LIBNAME).$(LIBEXTENSION)* $(LIBNAME).*.dylib readbincook $(DESTDIR)/$(LIBNAME).$(LIBEXTENSION)* $(DESTDIR)/$(LIBNAME).*.dylib
