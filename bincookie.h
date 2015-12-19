@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #define binarycookies_is_secure(cookie_ptr) (cookie_ptr->flags == secure || cookie_ptr->flags == secure_http_only)
+#define binarycookies_domain_access_full(cookie_ptr) (cookie_ptr->domain[0] == '.')
 
 typedef enum {
     secure = 1,
