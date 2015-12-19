@@ -11,8 +11,8 @@
 
 binarycookies_t *binarycookies_init(const char *file_path) {
     unsigned int i, j;
+    signed int slen;
     uint32_t *cookie_offsets;
-    size_t len;
     char magic[4];
 
     FILE *binary_file = fopen(file_path, "rb");
@@ -128,29 +128,37 @@ binarycookies_t *binarycookies_init(const char *file_path) {
             page_ptr += sizeof(double);
 
             page_ptr = cfile->raw_pages[i] + cookie_offsets[j] + url_offset;
-            len = name_offset - url_offset;
-            cookie->url = malloc(len);
-            memcpy(cookie->url, page_ptr, len);
+            slen = name_offset - url_offset;
+            if (slen > 0) {
+                cookie->url = malloc(slen);
+                memcpy(cookie->url, page_ptr, slen);
+            }
 
             page_ptr = cfile->raw_pages[i] + cookie_offsets[j] + name_offset;
-            len = path_offset - name_offset;
-            cookie->name = malloc(len);
-            memcpy(cookie->name, page_ptr, len);
+            slen = path_offset - name_offset;
+            if (slen > 0) {
+                cookie->name = malloc(slen);
+                memcpy(cookie->name, page_ptr, slen);
+            }
 
             page_ptr = cfile->raw_pages[i] + cookie_offsets[j] + path_offset;
-            len = value_offset - path_offset;
-            cookie->path = malloc(len);
-            memcpy(cookie->path, page_ptr, len);
+            slen = value_offset - path_offset;
+            if (slen > 0) {
+                cookie->path = malloc(slen);
+                memcpy(cookie->path, page_ptr, slen);
+            }
 
             page_ptr = cfile->raw_pages[i] + cookie_offsets[j] + value_offset;
-            len = 0;
+            slen = 0;
             int k = 0;
             while (page_ptr[k] != 0) {
-                len += 1;
+                slen += 1;
                 k++;
             }
-            cookie->value = malloc(len);
-            memcpy(cookie->value, page_ptr, len);
+            if (slen > 0) {
+                cookie->value = malloc(slen);
+                memcpy(cookie->value, page_ptr, slen);
+            }
 
             time_t tmp2 = (time_t)cookie->expiration_date;
             struct tm *tmp = gmtime(&tmp2);
