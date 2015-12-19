@@ -9,6 +9,11 @@
 
 #define APPLE_EPOCH_OFFSET 978307200
 
+// https://msdn.microsoft.com/en-us/library/a3140177.aspx
+#if defined(_MSC_VER)
+#define __builtin_bswap32 _byteswap_ulong
+#endif // _MSC_VER
+
 binarycookies_t *binarycookies_init(const char *file_path) {
     unsigned int i, j;
     signed int slen;
