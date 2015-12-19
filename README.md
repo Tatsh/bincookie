@@ -4,6 +4,22 @@ Apple has their own special binary cookie format, undocumented, in use on both O
 
 # How to build
 
+## On OS X
+
+1. `git clone https://github.com/Tatsh/libbinarycookies.git libbinarycookies`
+2. `cd libbinarycookies`
+3. `make`
+
+### How to link with Clang
+
+Example command line:
+
+```bash
+clang my_code.c libbinarycookies.A.dylib -o my_app
+```
+
+## Everything else
+
 1. `git clone https://github.com/Tatsh/libbinarycookies.git libbinarycookies`
 2. `cd libbinarycookies`
 3. `make`
