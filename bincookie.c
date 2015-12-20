@@ -93,23 +93,6 @@ binarycookies_t *binarycookies_init(const char *file_path) {
             memcpy(cookie, page_ptr, sizeof(uint32_t) + 4 + sizeof(uint32_t) + 4);
             page_ptr += sizeof(uint32_t) + 4 + sizeof(uint32_t) + 4;
 
-            switch (cookie->flags) {
-                case secure:
-                    strncpy(cookie->flags_str, "Secure", 6);
-                    break;
-
-                case http_only:
-                    strncpy(cookie->flags_str, "HttpOnly", 8);
-                    break;
-
-                case secure_http_only:
-                    strncpy(cookie->flags_str, "Secure; HttpOnly", 16);
-                    break;
-
-                default:
-                    break;
-            }
-
             uint32_t url_offset;
             memcpy(&url_offset, page_ptr, sizeof(uint32_t));
             page_ptr += sizeof(uint32_t);
@@ -168,14 +151,6 @@ binarycookies_t *binarycookies_init(const char *file_path) {
                 cookie->value = malloc(slen);
                 memcpy(cookie->value, page_ptr, slen);
             }
-
-            time_t tmp2 = (time_t)cookie->expiration_date;
-            struct tm *tmp = gmtime(&tmp2);
-            strftime(cookie->expiration_date_str, sizeof(cookie->expiration_date_str), "%Y-%m-%d %H:%m:%S", tmp);
-
-            tmp2 = (time_t)cookie->creation_date;
-            tmp = gmtime(&tmp2);
-            strftime(cookie->creation_date_str, sizeof(cookie->creation_date_str), "%Y-%m-%d %H:%m:%S", tmp);
         }
 
         free(cookie_offsets);
