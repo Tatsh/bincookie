@@ -1,7 +1,11 @@
 #ifndef _BINCOOKIE_H
 #define _BINCOOKIE_H
 
+#if defined(_MSC_VER)
+#define uint32_t DWORD
+#else
 #include <stdint.h>
+#endif
 
 #define binarycookies_is_secure(cookie_ptr) (cookie_ptr->flags & secure)
 #define binarycookies_domain_access_full(cookie_ptr) (cookie_ptr->domain[0] == '.')
@@ -33,8 +37,8 @@ typedef struct {
 
 typedef struct {
     unsigned char magic[4]; // "cook"
-    uint32_t num_pages; // big endian
-    uint32_t *page_sizes; // size: num_pages * sizeof(int), each size is big endian
+    uint32_t num_pages;
+    uint32_t *page_sizes;
     char **raw_pages;
     binarycookies_page_t **pages;
 } binarycookies_t;
