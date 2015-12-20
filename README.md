@@ -99,8 +99,8 @@ typedef struct {
 ```c
 typedef struct {
     binarycookies_flag flags;
-    double creation_date;
-    double expiration_date;
+    time_t creation_date;
+    time_t expiration_date;
     char *domain;
     char *name;
     char *path;
