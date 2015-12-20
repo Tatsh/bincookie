@@ -10,7 +10,7 @@
 #include <time.h>
 
 #define binarycookies_is_secure(cookie_ptr) (cookie_ptr->flags & secure)
-#define binarycookies_domain_access_full(cookie_ptr) (cookie_ptr->domain[0] == '.')
+#define binarycookies_domain_access_full(cookie_ptr) (cookie_ptr->domain && cookie_ptr->domain[0] == '.')
 
 typedef enum {
     secure = 1,
