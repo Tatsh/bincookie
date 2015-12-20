@@ -32,6 +32,8 @@ It is preferable that you create `some_destination` *before* running `make insta
 
 # Functions
 
+Be sure to `#include <binarycookies.h>` (which is installed with `make install`).
+
 `binarycookies_t *binarycookies_init(const char *file_path)` - Initialise a `binarycookies_t` type.
 
 `void binarycookies_free(binarycookies_t *cfile)` - Free a `binarycookies_t` type.
