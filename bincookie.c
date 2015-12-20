@@ -41,11 +41,12 @@ binarycookies_t *binarycookies_init(const char *file_path) {
     binarycookies_t *cfile = malloc(sizeof(binarycookies_t));
     memcpy(cfile->magic, magic, 4);
 
-    fread(&cfile->num_pages, 4, 1, binary_file);
+    fread(&cfile->num_pages, 4, 1, binary_file); // big endian
     cfile->num_pages = __builtin_bswap32(cfile->num_pages);
     cfile->raw_pages = malloc(sizeof(char *) * cfile->num_pages);
     cfile->pages = malloc(sizeof(binarycookies_page_t *) * cfile->num_pages);
 
+    // size: num_pages * sizeof(int), each page size is big endian
     cfile->page_sizes = malloc(sizeof(uint32_t) * cfile->num_pages);
     for (i = 0; i < cfile->num_pages; i++) {
         uint32_t page_size;
