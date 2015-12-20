@@ -112,12 +112,13 @@ binarycookies_t *binarycookies_init(const char *file_path) {
 
             page_ptr += sizeof(uint32_t) * 2; // end of cookie
 
-            memcpy(&cookie->expiration_date, page_ptr, sizeof(double));
-            cookie->expiration_date += APPLE_EPOCH_OFFSET;
+            double ce_time;
+            memcpy(&ce_time, page_ptr, sizeof(double));
+            cookie->expiration_time = (time_t)ce_time + APPLE_EPOCH_OFFSET;
             page_ptr += sizeof(double);
 
-            memcpy(&cookie->creation_date, page_ptr, sizeof(double));
-            cookie->creation_date += APPLE_EPOCH_OFFSET;
+            memcpy(&ce_time, page_ptr, sizeof(double));
+            cookie->creation_time = (time_t)ce_time + APPLE_EPOCH_OFFSET;
             page_ptr += sizeof(double);
 
             page_ptr = cfile->raw_pages[i] + cookie_offsets[j] + url_offset;
