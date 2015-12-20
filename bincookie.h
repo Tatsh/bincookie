@@ -7,6 +7,8 @@
 #include <stdint.h>
 #endif
 
+#include <time.h>
+
 #define binarycookies_is_secure(cookie_ptr) (cookie_ptr->flags & secure)
 #define binarycookies_domain_access_full(cookie_ptr) (cookie_ptr->domain[0] == '.')
 
@@ -21,8 +23,8 @@ typedef struct {
     binarycookies_flag flags;
     unsigned char unk2[4];
 
-    double creation_date;
-    double expiration_date;
+    time_t creation_time;
+    time_t expiration_time;
     char *domain;
     char *name;
     char *path;
