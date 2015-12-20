@@ -32,15 +32,15 @@ $(LIBNAME).$(LIBEXTENSION).$(LIBVERSION): $(OBJECTS)
 $(OBJECTS):%.o:%.c
 	$(CC) $(CFLAGS) -fvisibility=hidden -fPIC -c $< -o $@
 
-dylib-test: readbincook-dylib
+dylib-examples: readbincook-dylib
 
-test: readbincook
+examples: convert2netscape
 
-readbincook: $(LIBNAME).$(LIBEXTENSION)
-	$(CC) -I. $(CFLAGS) -L. -o readbincook test/main.c -lbinarycookies
+convert2netscape: $(LIBNAME).$(LIBEXTENSION)
+	$(CC) -I. $(CFLAGS) -L. -o convert2netscape examples/convert2netscape.c -lbinarycookies
 
-readbincook-dylib: dylib
-	$(CC) -I. $(CFLAGS) -L. -o readbincook test/main.c $(LIBNAME).A.dylib
+convert2netscape-dylib: dylib
+	$(CC) -I. $(CFLAGS) -L. -o convert2netscape examples/convert2netscape.c $(LIBNAME).A.dylib
 
 clean:
 	rm -f $(OBJECTS) $(LIBNAME).$(LIBEXTENSION)* $(LIBNAME).*.dylib readbincook $(DESTDIR)/$(LIBNAME).$(LIBEXTENSION)* $(DESTDIR)/$(LIBNAME).*.dylib
