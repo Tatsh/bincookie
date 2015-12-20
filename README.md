@@ -43,17 +43,20 @@ It is preferable that you create `some_destination` *before* running `make insta
 ```c
 binarycookies_t *bc = binarycookies_init("Cookies.binarycookies");
 unsigned int i, j;
+binarycookies_cookie_t *cookie;
 
 for (i = 0; i < bc->num_pages; i++) {
-    for (j = 0; j < bc->pages[i]->number_of_cookies; j++) {
-        printf("Name: %s\n", bc->pages[i]->cookies[j]->name);
+    for (j = 0, cookie = bc->pages[i]->cookies[j];
+         j < bc->pages[i]->number_of_cookies;
+         j++, cookie = bc->pages[i]->cookies[j]) {
+        printf("Name: %s\n", cookie->name);
     }
 }
 ```
 
 # Macros
 
-`bool binarycookies_is_secure(binarycookies_cookie_t *cookie)` - Test if a cookie must be used in a secure manner (HTTPS-only, etc).
+`bool binarycookies_is_secure(binarycookies_cookie_t *cookie)` - Test if a cookie has secure bit set.
 
 `bool binarycookies_domain_access_full(binarycookies_cookie_t *cookie)` - Test if a cookie can be used by all subdomains.
 
@@ -94,11 +97,8 @@ typedef struct {
 ```c
 typedef struct {
     binarycookies_flag flags;
-    char flags_str[16];
     double creation_date;
-    char creation_date_str[30];
     double expiration_date;
-    char expiration_date_str[30];
     char *domain;
     char *name;
     char *path;
@@ -109,11 +109,8 @@ typedef struct {
 ### Fields
 
 * `flags` - if the cookie is secure, HTTP-only, etc
-* `flags_str` - helper string for the flag (example: *Secure; HttpOnly*)
 * `creation_date` - UNIX timestamp of creation date
-* `creation_date_str` - ISO date string of creation date
 * `expiration_date` - UNIX timestamp of expiration date
-* `expiration_date_str` - ISO date string of expiration date
 * `domain` - domain value
 * `name` - name of cookie
 * `path` - path the cookie is allowed to be used on
@@ -123,10 +120,9 @@ typedef struct {
 
 ```c
 typedef enum {
-    secure = 1,
-    http_only = 1 << 2,
-    secure_http_only = 5,
+    secure,
+    http_only,
 } binarycookies_flag;
 ```
 
-The value that stores whether or not a cookie is secure, HTTP-only, or any of these combinations is a single 32-bit integer. It is unknown if this is a series of flags (via some mechanism such as OR'ing) or if these are just defined with all combinations. Since *Secure + HTTP only* appears is not a power of 2, it seems the latter is more likely (although that seems strange).
+The value that stores whether or not a cookie is secure, HTTP-only, or any of these combinations is a single 32-bit integer, with 0 or more values OR'd together (`0` is the default value). To test for a particular property, such as HTTP-only, use the `&` operator: `cookie->flags & http_only`.
