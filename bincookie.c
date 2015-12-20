@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 #include "bincookie.h"
 
@@ -39,15 +38,19 @@ binarycookies_t *binarycookies_init(const char *file_path) {
     }
 
     binarycookies_t *cfile = malloc(sizeof(binarycookies_t));
+    memset(cfile, 0, sizeof(binarycookies_t));
     memcpy(cfile->magic, magic, 4);
 
     fread(&cfile->num_pages, 4, 1, binary_file); // big endian
     cfile->num_pages = __builtin_bswap32(cfile->num_pages);
     cfile->raw_pages = malloc(sizeof(char *) * cfile->num_pages);
+    memset(cfile->raw_pages, 0, sizeof(char *) * cfile->num_pages);
     cfile->pages = malloc(sizeof(binarycookies_page_t *) * cfile->num_pages);
+    memset(cfile->pages, 0, sizeof(binarycookies_page_t *) * cfile->num_pages);
 
     // size: num_pages * sizeof(int), each page size is big endian
     cfile->page_sizes = malloc(sizeof(uint32_t) * cfile->num_pages);
+    memset(cfile->page_sizes, 0, sizeof(uint32_t) * cfile->num_pages);
     for (i = 0; i < cfile->num_pages; i++) {
         uint32_t page_size;
 
@@ -57,6 +60,7 @@ binarycookies_t *binarycookies_init(const char *file_path) {
 
     for (i = 0; i < cfile->num_pages; i++) {
         char *ps = malloc(cfile->page_sizes[i]);
+        memset(ps, 0, cfile->page_sizes[i]);
 
         fread(ps, cfile->page_sizes[i], 1, binary_file);
         cfile->raw_pages[i] = ps;
@@ -67,6 +71,7 @@ binarycookies_t *binarycookies_init(const char *file_path) {
     // Read
     for (i = 0; i < cfile->num_pages; i++) {
         binarycookies_page_t *page = malloc(sizeof(binarycookies_page_t));
+        memset(page, 0, sizeof(binarycookies_page_t));
         memcpy(page->unk1, cfile->raw_pages[i], 4);
 
         char *page_ptr = cfile->raw_pages[i] + 4; // skip 4 bytes, always 0x0 0x0 0x1 0x0
@@ -75,7 +80,9 @@ binarycookies_t *binarycookies_init(const char *file_path) {
         page_ptr += sizeof(uint32_t);
 
         cookie_offsets = malloc(sizeof(uint32_t) * page->number_of_cookies);
+        memset(cookie_offsets, 0, sizeof(uint32_t) * page->number_of_cookies);
         page->cookies = malloc(sizeof(binarycookies_cookie_t) * page->number_of_cookies);
+        memset(page->cookies, 0, sizeof(binarycookies_cookie_t) * page->number_of_cookies);
         for (j = 0; j < page->number_of_cookies; j++) {
             uint32_t cookie_offset;
 
@@ -89,6 +96,7 @@ binarycookies_t *binarycookies_init(const char *file_path) {
         for (j = 0; j < page->number_of_cookies; j++) {
             page_ptr = cfile->raw_pages[i] + cookie_offsets[j];
             binarycookies_cookie_t *cookie = malloc(sizeof(binarycookies_cookie_t));
+            memset(cookie, 0, sizeof(binarycookies_cookie_t));
             page->cookies[j] = cookie;
 
             memcpy(cookie, page_ptr, sizeof(uint32_t) + 4 + sizeof(uint32_t) + 4);
@@ -125,6 +133,7 @@ binarycookies_t *binarycookies_init(const char *file_path) {
             slen = name_offset - url_offset;
             if (slen > 0) {
                 cookie->domain = malloc(slen);
+                memset(cookie->domain, 0, slen);
                 memcpy(cookie->domain, page_ptr, slen);
             }
 
@@ -132,6 +141,7 @@ binarycookies_t *binarycookies_init(const char *file_path) {
             slen = path_offset - name_offset;
             if (slen > 0) {
                 cookie->name = malloc(slen);
+                memset(cookie->name, 0, slen);
                 memcpy(cookie->name, page_ptr, slen);
             }
 
@@ -139,6 +149,7 @@ binarycookies_t *binarycookies_init(const char *file_path) {
             slen = value_offset - path_offset;
             if (slen > 0) {
                 cookie->path = malloc(slen);
+                memset(cookie->path, 0, slen);
                 memcpy(cookie->path, page_ptr, slen);
             }
 
@@ -151,6 +162,7 @@ binarycookies_t *binarycookies_init(const char *file_path) {
             }
             if (slen > 0) {
                 cookie->value = malloc(slen);
+                memset(cookie->value, 0, slen);
                 memcpy(cookie->value, page_ptr, slen);
             }
         }
