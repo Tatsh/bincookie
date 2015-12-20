@@ -113,9 +113,9 @@ typedef struct {
 * `flags` - if the cookie is secure, HTTP-only, etc
 * `creation_date` - UNIX timestamp of creation date
 * `expiration_date` - UNIX timestamp of expiration date
-* `domain` - domain value
+* `domain` - domain value. Can be `NULL`
 * `name` - name of cookie
-* `path` - path the cookie is allowed to be used on
+* `path` - path the cookie is allowed to be used on. Can be `NULL`
 * `value` - value of the cookie
 
 ## Flag enum
