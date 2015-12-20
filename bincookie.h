@@ -3,13 +3,12 @@
 
 #include <stdint.h>
 
-#define binarycookies_is_secure(cookie_ptr) (cookie_ptr->flags == secure || cookie_ptr->flags == secure_http_only)
+#define binarycookies_is_secure(cookie_ptr) (cookie_ptr->flags & secure)
 #define binarycookies_domain_access_full(cookie_ptr) (cookie_ptr->domain[0] == '.')
 
 typedef enum {
     secure = 1,
     http_only = 1 << 2,
-    secure_http_only = 5,
 } binarycookies_flag;
 
 typedef struct {
@@ -18,11 +17,8 @@ typedef struct {
     binarycookies_flag flags;
     unsigned char unk2[4];
 
-    char flags_str[16];
     double creation_date;
-    char creation_date_str[30];
     double expiration_date;
-    char expiration_date_str[30];
     char *domain;
     char *name;
     char *path;
