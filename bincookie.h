@@ -15,6 +15,19 @@ typedef unsigned __int32 uint32_t;
 #include <stdint.h>
 #endif
 
+// http://www.transmissionzero.co.uk/computing/building-dlls-with-mingw/
+#if defined(_WIN32) && defined(WINDLL)
+#define ADDAPI __declspec(dllexport)
+#else
+#define ADDAPI
+#endif
+
+// Disable warnings about secure CRT, but still enable compatible signature versions
+// http://stackoverflow.com/a/119752/374110
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <time.h>
 
 #define binarycookies_is_secure(cookie_ptr) (cookie_ptr->flags & secure)
@@ -53,8 +66,8 @@ typedef struct {
     binarycookies_page_t **pages;
 } binarycookies_t;
 
-binarycookies_t *binarycookies_init(const char *file_path);
-void binarycookies_free(binarycookies_t *cfile);
+ADDAPI binarycookies_t *binarycookies_init(const char *file_path);
+ADDAPI void binarycookies_free(binarycookies_t *cfile);
 
 #ifdef __cplusplus
 }
