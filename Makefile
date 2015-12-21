@@ -14,6 +14,9 @@ all: $(LIBNAME).$(LIBEXTENSION)
 dylib: $(OBJECTS)
 	$(CC) -dynamiclib $(CFLAGS) -current_version $(LIBVERSION) -compatibility_version $(LIBVERSION) -fvisibility=hidden -o $(LIBNAME).A.dylib $(OBJECTS)
 
+dll: $(OBJECTS)
+	$(CC) -o $(LIBNAME).dll $(OBJECTS) -s -shared -Wl,--subsystem,windows
+
 install: $(LIBNAME).$(LIBEXTENSION)
 	cp $(LIBNAME).$(LIBEXTENSION) $(LIBNAME).$(LIBEXTENSION).$(LIBVERSION_SHORT) $(LIBNAME).$(LIBEXTENSION).$(LIBVERSION) $(LIBDIR)
 	cp bincookie.h $(INCDIR)/binarycookies.h
