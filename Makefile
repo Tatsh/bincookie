@@ -32,7 +32,7 @@ $(LIBNAME).$(LIBEXTENSION).$(LIBVERSION): $(OBJECTS)
 $(OBJECTS):%.o:%.c
 	$(CC) $(CFLAGS) -fvisibility=hidden -fPIC -c $< -o $@
 
-dylib-examples: readbincook-dylib
+dylib-examples: convert2netscape-dylib
 
 examples: convert2netscape
 
