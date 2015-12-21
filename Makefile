@@ -4,8 +4,9 @@ LIBVERSION_SHORT = 0
 LIBEXTENSION := so
 CFLAGS := -std=c11 -pedantic -Wall
 CC := gcc
-DESTDIR := ./out
-
+DESTDIR := /usr
+LIBDIR := $(DESTDIR)/lib
+INCDIR := $(DESTDIR)/include
 OBJECTS = bincookie.o
 
 all: $(LIBNAME).$(LIBEXTENSION)
@@ -14,9 +15,8 @@ dylib: $(OBJECTS)
 	$(CC) -dynamiclib $(CFLAGS) -current_version $(LIBVERSION) -compatibility_version $(LIBVERSION) -fvisibility=hidden -o $(LIBNAME).A.dylib $(OBJECTS)
 
 install: $(LIBNAME).$(LIBEXTENSION)
-	mkdir -p $(DESTDIR)
-	cp $(LIBNAME).$(LIBEXTENSION) $(LIBNAME).$(LIBEXTENSION).$(LIBVERSION_SHORT) $(LIBNAME).$(LIBEXTENSION).$(LIBVERSION) $(DESTDIR)/lib
-	cp bincookie.h $(DESTDIR)/include/binarycookies.h
+	cp $(LIBNAME).$(LIBEXTENSION) $(LIBNAME).$(LIBEXTENSION).$(LIBVERSION_SHORT) $(LIBNAME).$(LIBEXTENSION).$(LIBVERSION) $(LIBDIR)
+	cp bincookie.h $(INCDIR)/binarycookies.h
 
 $(LIBNAME).$(LIBEXTENSION): $(LIBNAME).$(LIBEXTENSION).$(LIBVERSION_SHORT)
 	rm -f $(LIBNAME).$(LIBEXTENSION)
