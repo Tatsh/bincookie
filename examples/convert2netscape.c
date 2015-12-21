@@ -12,6 +12,10 @@ int main(int argc, char *argv[]) {
     binarycookies_t *bc = binarycookies_init(argv[1]);
     unsigned int i, j;
 
+    if (!bc) {
+        return 1;
+    }
+
     // Output in Netscape cookies.txt format
     for (i = 0; i < bc->num_pages; i++) {
         for (j = 0; j < bc->pages[i]->number_of_cookies; j++) {
