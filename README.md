@@ -8,7 +8,7 @@ Apple has their own special binary cookie format, undocumented, in use on both O
 
 1. `git clone https://github.com/Tatsh/libbinarycookies.git libbinarycookies`
 2. `cd libbinarycookies`
-3. `make`
+3. `make dylib`
 
 ### How to link with Clang
 
@@ -18,11 +18,19 @@ Example command line:
 clang my_code.c libbinarycookies.A.dylib -o my_app
 ```
 
+# With MinGW
+
+1. `git clone https://github.com/Tatsh/libbinarycookies.git libbinarycookies`
+2. `cd libbinarycookies`
+3. `make dll`
+
 ## Everything else
 
 1. `git clone https://github.com/Tatsh/libbinarycookies.git libbinarycookies`
 2. `cd libbinarycookies`
 3. `make`
+
+Visual C++ has not been tested, but code is in place to allow building of a DLL. Using the code statically should work, although warnings regarding Secure CRT will appear.
 
 ## Fun: Wine
 
