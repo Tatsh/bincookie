@@ -1,5 +1,6 @@
 // Based on the Python script by Satishb3 <satishb3@securitylearn.net>
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,6 +23,7 @@ binarycookies_t *binarycookies_init(const char *file_path) {
     signed int slen;
     uint32_t *cookie_offsets;
     char magic[4];
+    size_t read;
 
     FILE *binary_file = fopen(file_path, "rb");
 
@@ -30,9 +32,10 @@ binarycookies_t *binarycookies_init(const char *file_path) {
         return NULL;
     }
 
-    fread(magic, 4, 1, binary_file);
+    read = fread(magic, sizeof(magic), 1, binary_file);
+    assert(read == 1);
 
-    if (strncmp(magic, "cook", 4)) {
+    if (strncmp(magic, "cook", sizeof(magic))) {
         fprintf(stderr, "Not a correctly formatted file (incorrect magic)\n");
         return NULL;
     }
@@ -41,7 +44,8 @@ binarycookies_t *binarycookies_init(const char *file_path) {
     memset(cfile, 0, sizeof(binarycookies_t));
     memcpy(cfile->magic, magic, 4);
 
-    fread(&cfile->num_pages, 4, 1, binary_file); // big endian
+    read = fread(&cfile->num_pages, sizeof(uint32_t), 1, binary_file); // big endian
+    assert(read == 1);
     cfile->num_pages = __builtin_bswap32(cfile->num_pages);
     cfile->raw_pages = malloc(sizeof(char *) * cfile->num_pages);
     memset(cfile->raw_pages, 0, sizeof(char *) * cfile->num_pages);
@@ -54,7 +58,8 @@ binarycookies_t *binarycookies_init(const char *file_path) {
     for (i = 0; i < cfile->num_pages; i++) {
         uint32_t page_size;
 
-        fread(&page_size, 4, 1, binary_file);
+        read = fread(&page_size, sizeof(uint32_t), 1, binary_file);
+        assert(read == 1);
         cfile->page_sizes[i] = __builtin_bswap32(page_size);
     }
 
@@ -62,7 +67,8 @@ binarycookies_t *binarycookies_init(const char *file_path) {
         char *ps = malloc(cfile->page_sizes[i]);
         memset(ps, 0, cfile->page_sizes[i]);
 
-        fread(ps, cfile->page_sizes[i], 1, binary_file);
+        read = fread(ps, cfile->page_sizes[i], 1, binary_file);
+        assert(read == 1);
         cfile->raw_pages[i] = ps;
     }
 
