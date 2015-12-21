@@ -5,8 +5,12 @@
 extern "C" {
 #endif
 
-#if defined(_MSC_VER)
-#define uint32_t DWORD
+#include <sys/types.h>
+#if defined(_WIN32) && !defined(__MINGW32__) && \
+  (!defined(_MSC_VER) || _MSC_VER<1600) && !defined(__WINE__)
+#include <BaseTsd.h>
+#include <stddef.h>
+typedef unsigned __int32 uint32_t;
 #else
 #include <stdint.h>
 #endif
