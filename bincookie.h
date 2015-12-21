@@ -1,6 +1,10 @@
 #ifndef _BINCOOKIE_H
 #define _BINCOOKIE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if defined(_MSC_VER)
 #define uint32_t DWORD
 #else
@@ -47,5 +51,9 @@ typedef struct {
 
 binarycookies_t *binarycookies_init(const char *file_path);
 void binarycookies_free(binarycookies_t *cfile);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // _BINCOOKIE_H
