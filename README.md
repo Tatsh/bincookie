@@ -24,6 +24,10 @@ clang my_code.c libbinarycookies.A.dylib -o my_app
 2. `cd libbinarycookies`
 3. `make`
 
+## Fun: Wine
+
+Use `make CC=winegcc clean examples` and run `wine convert2netscape.exe.so path-to.binarycookies`.
+
 # Installation
 
 1. `make DESTDIR=some_destination install`
