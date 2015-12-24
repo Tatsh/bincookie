@@ -31,43 +31,65 @@ typedef unsigned __int32 uint32_t;
 
 #include <time.h>
 
+//! Check if a cookie has the secure bit enabled (only to be accessed over HTTPS).
+/*!
+ * \param cookie_ptr Pointer to a cookie data structure.
+ */
 #define binarycookies_is_secure(cookie_ptr) (cookie_ptr->flags & secure)
+//! Check if a cookie can be used on all subdomains of its original domain.
+/*!
+ * \param cookie_ptr Pointer to a cookie data structure.
+ */
 #define binarycookies_domain_access_full(cookie_ptr) (cookie_ptr->domain && cookie_ptr->domain[0] == '.')
 
+//! Security enabled for a cookie.
+/*! A cookie can be either or these values or 2 or more values OR'd together. */
 typedef enum {
     secure = 1,
     http_only = 1 << 2,
 } binarycookies_flag;
 
+//! Cookie data structure.
 typedef struct {
     uint32_t size;
     unsigned char unk1[4];
-    binarycookies_flag flags;
+    binarycookies_flag flags; /*!<Flags used with the cookie. */
     unsigned char unk2[4];
 
-    time_t creation_time;
-    time_t expiration_time;
-    char *domain;
-    char *name;
-    char *path;
-    char *value;
+    time_t creation_time;   /*!< Creation time. */
+    time_t expiration_time; /*!< Expiration time. */
+    char *domain;           /*!< Domain name. Can be NULL. */
+    char *name;             /*!< Name of the cookie. */
+    char *path;             /*!< Path of the cookie. Can be NULL. */
+    char *value;            /*!< Value of the cookie. */
 } binarycookies_cookie_t;
 
+//! Cookie page structure. A page can consist of 1 or more cookies.
 typedef struct {
-    unsigned char unk1[4]; // always 0x0 0x0 0x1 0x0
-    uint32_t number_of_cookies;
-    binarycookies_cookie_t **cookies;
+    unsigned char unk1[4];             /*! Has unknown purpose. Seems to be always `0x0 0x0 0x1 0x0`. */
+    uint32_t number_of_cookies;        /*!< Number of cookies contained in this page. */
+    binarycookies_cookie_t **cookies; /*!< Pointer to an array of cookies. */
 } binarycookies_page_t;
 
+//! binarycookies file structure.
 typedef struct {
-    unsigned char magic[4]; // "cook"
-    uint32_t num_pages;
-    uint32_t *page_sizes;
+    unsigned char magic[4]; /*!< Magic: "cook" */
+    uint32_t num_pages; /*!< Number of pages in this file */
+    uint32_t *page_sizes; /*!< Page sizes (same length as number of pages) */
     char **raw_pages;
-    binarycookies_page_t **pages;
+    binarycookies_page_t **pages; /*!< Array of cookie pages. */
 } binarycookies_t;
 
+//! Read a binarycookies file.
+/*!
+  \param file_path File path string.
+ \return Pointer to a <code>binarycookies_t</code> structure or <code>NULL</code>.
+ */
 ADDAPI binarycookies_t *binarycookies_init(const char *file_path);
+//! Free a binarycookies_t structure.
+/*!
+  \param cfile Pointer to data structure created with <code>binarycookies_init()</code>.
+ */
 ADDAPI void binarycookies_free(binarycookies_t *cfile);
 
 #ifdef __cplusplus
