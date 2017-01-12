@@ -9,6 +9,7 @@ Apple has their own special binary cookie format, undocumented, in use on both O
 1. `git clone https://github.com/Tatsh/libbinarycookies.git libbinarycookies`
 2. `cd libbinarycookies`
 3. `xcodebuild clean build`
+4. `cp build/Release/liblibbinarycookies.dylib libbinarycookies.A.dylib`
 
 ### How to link with Clang
 
