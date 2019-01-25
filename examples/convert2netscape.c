@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "bincookie.h"
+#include "../bincookie.h"
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -9,10 +9,10 @@ int main(int argc, char *argv[]) {
     }
 
     binarycookies_t *bc;
-    unsigned int i, j, k;
+    unsigned int i, j;
 
     // Output in Netscape cookies.txt format
-    for (k = 1; k < argc; k++) {
+    for (int k = 1; k < argc; k++) {
         bc = binarycookies_init(argv[k]);
 
         if (!bc) {
