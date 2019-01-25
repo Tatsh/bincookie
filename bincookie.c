@@ -37,10 +37,16 @@ binarycookies_t *binarycookies_init(const char *file_path) {
 
     if (strncmp(magic, "cook", sizeof(magic))) {
         fprintf(stderr, "Not a correctly formatted file (incorrect magic)\n");
+        fclose(binary_file);
         return NULL;
     }
 
     binarycookies_t *cfile = malloc(sizeof(binarycookies_t));
+    if (!cfile) {
+        fprintf(stderr, "Failed to allocate memory.\n");
+        fclose(binary_file);
+        return NULL;
+    }
     memset(cfile, 0, sizeof(binarycookies_t));
     memcpy(cfile->magic, magic, 4);
 
@@ -97,8 +103,6 @@ binarycookies_t *binarycookies_init(const char *file_path) {
             page_ptr += sizeof(uint32_t);
         }
 
-        page_ptr += sizeof(uint32_t); // end of page header
-
         for (j = 0; j < page->number_of_cookies; j++) {
             page_ptr = cfile->raw_pages[i] + cookie_offsets[j];
             binarycookies_cookie_t *cookie = malloc(sizeof(binarycookies_cookie_t));
@@ -133,7 +137,6 @@ binarycookies_t *binarycookies_init(const char *file_path) {
 
             memcpy(&ce_time, page_ptr, sizeof(double));
             cookie->creation_time = (time_t)ce_time + APPLE_EPOCH_OFFSET;
-            page_ptr += sizeof(double);
 
             page_ptr = cfile->raw_pages[i] + cookie_offsets[j] + url_offset;
             slen = name_offset - url_offset;
