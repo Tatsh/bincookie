@@ -13,7 +13,7 @@ Install CMake and make sure it is in `PATH`. Then in your terminal:
 1. `git clone https://github.com/Tatsh/bincookie.git`
 2. `cd bincookie`
 3. `mkdir build`
-4. `cmake -DCMAKE_INSTALL_PREFIX=<prefix> -DCMAKE_BUILD_TYPE=RelWithDebugInfo`
+4. `cmake -DCMAKE_INSTALL_PREFIX=<prefix> -DCMAKE_BUILD_TYPE=RelWithDebInfo`
 5. `make install`
 
 To build with the examples, add `-DWITH_EXAMPLES=yes` to step 4.
