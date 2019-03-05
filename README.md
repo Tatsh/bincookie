@@ -20,6 +20,14 @@ To build with the examples, add `-DWITH_EXAMPLES=yes` to step 4.
 
 Replace `<prefix>` with a value like `/usr/local`, `/usr/`, or `/opt/local` (MacPorts).
 
+## Framework
+
+Use a CMake command line like the following:
+
+```sh
+cmake -DCMAKE_INSTALL_PREFIX=<prefix> -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_FRAMEWORK=yes
+```
+
 # Functions
 
 Be sure to `#include <bincookie.h>` (which is installed with `make install`).
