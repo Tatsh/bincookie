@@ -4,44 +4,21 @@ Apple has their own special binary cookie format, undocumented, in use on both O
 
 # How to build
 
-## On OS X
+You can easily include the code statically with your app or you can build a library.
 
-1. `git clone https://github.com/Tatsh/libbincookie.git libbincookie`
-2. `cd libbincookie`
-3. `xcodebuild clean build`
-4. `cp build/Release/liblibbincookie.dylib libbincookie.A.dylib`
+## Shared library
 
-### How to link with Clang
+Install CMake and make sure it is in `PATH`. Then in your terminal:
 
-Example command line:
+1. `git clone https://github.com/Tatsh/bincookie.git`
+2. `cd bincookie`
+3. `mkdir build`
+4. `cmake -DCMAKE_INSTALL_PREFIX=<prefix> -DCMAKE_BUILD_TYPE=RelWithDebugInfo`
+5. `make install`
 
-```bash
-clang my_code.c libbincookie.A.dylib -o my_app
-```
+To build with the examples, add `-DWITH_EXAMPLES=yes` to step 4.
 
-# With MinGW
-
-1. `git clone https://github.com/Tatsh/libbincookie.git libbincookie`
-2. `cd libbincookie`
-3. `make dll`
-
-## Everything else
-
-1. `git clone https://github.com/Tatsh/libbincookie.git libbincookie`
-2. `cd libbincookie`
-3. `make`
-
-Visual C++ has not been tested, but code is in place to allow building of a DLL. Using the code statically should work, although warnings regarding Secure CRT will appear.
-
-## Fun: Wine
-
-Use `make CC=winegcc clean examples` and run `wine convert2netscape.exe.so path-to.binarycookies`.
-
-# Installation
-
-1. `make DESTDIR=some_destination install`
-
-It is preferable that you create `some_destination` *before* running `make install`.
+Replace `<prefix>` with a value like `/usr/local`, `/usr/`, or `/opt/local` (MacPorts).
 
 # Functions
 
@@ -50,24 +27,6 @@ Be sure to `#include <bincookie.h>` (which is installed with `make install`).
 `bincookie_t *bincookie_init(const char *file_path)` - Initialise a `bincookie_t` type.
 
 `void bincookie_free(bincookie_t *cfile)` - Free a `bincookie_t` type.
-
-## Examples
-
-### Access all the cookie names in a file
-
-```c
-bincookie_t *bc = bincookie_init("Cookies.binarycookies");
-unsigned int i, j;
-bincookie_cookie_t *cookie;
-
-for (i = 0; i < bc->num_pages; i++) {
-    for (j = 0, cookie = bc->pages[i]->cookies[j];
-         j < bc->pages[i]->number_of_cookies;
-         j++, cookie = bc->pages[i]->cookies[j]) {
-        printf("Name: %s\n", cookie->name);
-    }
-}
-```
 
 # Macros
 
@@ -141,3 +100,21 @@ typedef enum {
 ```
 
 The value that stores whether or not a cookie is secure, HTTP-only, or any of these combinations is a single 32-bit integer, with 0 or more values OR'd together (`0` is the default value). To test for a particular property, such as HTTP-only, use the `&` operator: `cookie->flags & http_only`.
+
+# Examples
+
+## Access all the cookie names in a file
+
+```c
+bincookie_t *bc = bincookie_init("Cookies.binarycookies");
+unsigned int i, j;
+bincookie_cookie_t *cookie;
+
+for (i = 0; i < bc->num_pages; i++) {
+    for (j = 0, cookie = bc->pages[i]->cookies[j];
+         j < bc->pages[i]->number_of_cookies;
+         j++, cookie = bc->pages[i]->cookies[j]) {
+        printf("Name: %s\n", cookie->name);
+    }
+}
+```
