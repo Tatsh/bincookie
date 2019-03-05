@@ -4,16 +4,16 @@
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
-        printf("Usage: %s [Cookies.binarycookies files]\n", argv[0]);
+        printf("Usage: %s [Cookies.bincookie files]\n", argv[0]);
         return 1;
     }
 
-    binarycookies_t *bc;
+    bincookie_t *bc;
     unsigned int i, j;
 
     // Output in Netscape cookies.txt format
     for (int k = 1; k < argc; k++) {
-        bc = binarycookies_init(argv[k]);
+        bc = bincookie_init(argv[k]);
 
         if (!bc) {
             continue;
@@ -24,16 +24,16 @@ int main(int argc, char *argv[]) {
                 // domain, flag, path, secure, expiration, name, value
                 printf("%s\t%s\t%s\t%s\t%ld\t%s\t%s\n",
                     bc->pages[i]->cookies[j]->domain ? bc->pages[i]->cookies[j]->domain : "",
-                    binarycookies_domain_access_full(bc->pages[i]->cookies[j]) ? "TRUE" : "FALSE",
+                    bincookie_domain_access_full(bc->pages[i]->cookies[j]) ? "TRUE" : "FALSE",
                     bc->pages[i]->cookies[j]->path ? bc->pages[i]->cookies[j]->path : "",
-                    binarycookies_is_secure(bc->pages[i]->cookies[j]) ? "TRUE" : "FALSE",
+                    bincookie_is_secure(bc->pages[i]->cookies[j]) ? "TRUE" : "FALSE",
                     bc->pages[i]->cookies[j]->expiration_time,
                     bc->pages[i]->cookies[j]->name,
                     bc->pages[i]->cookies[j]->value);
             }
         }
 
-        binarycookies_free(bc);
+        bincookie_free(bc);
     }
 
     return 0;

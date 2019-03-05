@@ -18,7 +18,7 @@
 #endif // _MSC_VER
 
 EXPORT
-binarycookies_t *binarycookies_init(const char *file_path) {
+bincookie_t *bincookie_init(const char *file_path) {
     unsigned int i, j;
     signed int slen;
     uint32_t *cookie_offsets;
@@ -41,13 +41,13 @@ binarycookies_t *binarycookies_init(const char *file_path) {
         return NULL;
     }
 
-    binarycookies_t *cfile = malloc(sizeof(binarycookies_t));
+    bincookie_t *cfile = malloc(sizeof(bincookie_t));
     if (!cfile) {
         fprintf(stderr, "Failed to allocate memory.\n");
         fclose(binary_file);
         return NULL;
     }
-    memset(cfile, 0, sizeof(binarycookies_t));
+    memset(cfile, 0, sizeof(bincookie_t));
     memcpy(cfile->magic, magic, 4);
 
     read = fread(&cfile->num_pages, sizeof(uint32_t), 1, binary_file); // big endian
@@ -55,8 +55,8 @@ binarycookies_t *binarycookies_init(const char *file_path) {
     cfile->num_pages = __builtin_bswap32(cfile->num_pages);
     cfile->raw_pages = malloc(sizeof(char *) * cfile->num_pages);
     memset(cfile->raw_pages, 0, sizeof(char *) * cfile->num_pages);
-    cfile->pages = malloc(sizeof(binarycookies_page_t *) * cfile->num_pages);
-    memset(cfile->pages, 0, sizeof(binarycookies_page_t *) * cfile->num_pages);
+    cfile->pages = malloc(sizeof(bincookie_page_t *) * cfile->num_pages);
+    memset(cfile->pages, 0, sizeof(bincookie_page_t *) * cfile->num_pages);
 
     // size: num_pages * sizeof(int), each page size is big endian
     cfile->page_sizes = malloc(sizeof(uint32_t) * cfile->num_pages);
@@ -82,8 +82,8 @@ binarycookies_t *binarycookies_init(const char *file_path) {
 
     // Read
     for (i = 0; i < cfile->num_pages; i++) {
-        binarycookies_page_t *page = malloc(sizeof(binarycookies_page_t));
-        memset(page, 0, sizeof(binarycookies_page_t));
+        bincookie_page_t *page = malloc(sizeof(bincookie_page_t));
+        memset(page, 0, sizeof(bincookie_page_t));
         memcpy(page->unk1, cfile->raw_pages[i], 4);
 
         char *page_ptr = cfile->raw_pages[i] + 4; // skip 4 bytes, always 0x0 0x0 0x1 0x0
@@ -93,8 +93,8 @@ binarycookies_t *binarycookies_init(const char *file_path) {
 
         cookie_offsets = malloc(sizeof(uint32_t) * page->number_of_cookies);
         memset(cookie_offsets, 0, sizeof(uint32_t) * page->number_of_cookies);
-        page->cookies = malloc(sizeof(binarycookies_cookie_t) * page->number_of_cookies);
-        memset(page->cookies, 0, sizeof(binarycookies_cookie_t) * page->number_of_cookies);
+        page->cookies = malloc(sizeof(bincookie_cookie_t) * page->number_of_cookies);
+        memset(page->cookies, 0, sizeof(bincookie_cookie_t) * page->number_of_cookies);
         for (j = 0; j < page->number_of_cookies; j++) {
             uint32_t cookie_offset;
 
@@ -105,8 +105,8 @@ binarycookies_t *binarycookies_init(const char *file_path) {
 
         for (j = 0; j < page->number_of_cookies; j++) {
             page_ptr = cfile->raw_pages[i] + cookie_offsets[j];
-            binarycookies_cookie_t *cookie = malloc(sizeof(binarycookies_cookie_t));
-            memset(cookie, 0, sizeof(binarycookies_cookie_t));
+            bincookie_cookie_t *cookie = malloc(sizeof(bincookie_cookie_t));
+            memset(cookie, 0, sizeof(bincookie_cookie_t));
             page->cookies[j] = cookie;
 
             memcpy(cookie, page_ptr, sizeof(uint32_t) + 4 + sizeof(uint32_t) + 4);
@@ -185,7 +185,7 @@ binarycookies_t *binarycookies_init(const char *file_path) {
 }
 
 EXPORT
-void binarycookies_free(binarycookies_t *cfile) {
+void bincookie_free(bincookie_t *cfile) {
     unsigned int i, j;
 
     for (i = 0; i < cfile->num_pages; i++) {
