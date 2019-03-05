@@ -7,7 +7,7 @@
 
 #include "bincookie.h"
 
-#define APPLE_EPOCH_OFFSET 978307200
+static const unsigned long APPLE_EPOCH_OFFSET = 978307200;
 
 // https://msdn.microsoft.com/en-us/library/a3140177.aspx
 #if defined(_MSC_VER)
