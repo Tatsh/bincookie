@@ -64,8 +64,7 @@ if(APPLE AND BUILD_FRAMEWORK)
                                    FRAMEWORK_VERSION
                                    A
                                    MACOSX_FRAMEWORK_IDENTIFIER
-                                   sh.tat
-                                   .bincookie
+                                   sh.tat.bincookie
                                    MACOSX_FRAMEWORK_SHORT_VERSION_STRING
                                    ${BINCOOKIE_VERSION}
                                    MACOSX_FRAMEWORK_BUNDLE_VERSION
