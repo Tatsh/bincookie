@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "../bincookie.h"
 
@@ -9,7 +11,10 @@ int main(int argc, char *argv[]) {
     }
 
     bincookie_t *bc;
-    unsigned int i, j;
+    bincookie_page_t *page;
+    bincookie_cookie_t *cookie;
+    bincookie_iter_state_t state;
+    unsigned int cookie_index = 0;
 
     // Output in Netscape cookies.txt format
     for (int k = 1; k < argc; k++) {
@@ -19,21 +24,23 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        for (i = 0; i < bc->num_pages; i++) {
-            for (j = 0; j < bc->pages[i]->number_of_cookies; j++) {
-                // domain, flag, path, secure, expiration, name, value
-                printf("%s\t%s\t%s\t%s\t%ld\t%s\t%s\n",
-                    bc->pages[i]->cookies[j]->domain ? bc->pages[i]->cookies[j]->domain : "",
-                    bincookie_domain_access_full(bc->pages[i]->cookies[j]) ? "TRUE" : "FALSE",
-                    bc->pages[i]->cookies[j]->path ? bc->pages[i]->cookies[j]->path : "",
-                    bincookie_is_secure(bc->pages[i]->cookies[j]) ? "TRUE" : "FALSE",
-                    bc->pages[i]->cookies[j]->expiration_time,
-                    bc->pages[i]->cookies[j]->name,
-                    bc->pages[i]->cookies[j]->value);
+        bincookie_iter_state_init(state);
+
+        while ((page = bincookie_iter_pages(bc, &state)) != NULL) {
+            while ((cookie = bincookie_iter_cookies(page, &cookie_index)) !=
+                   NULL) {
+                printf("%s\t%s\t%s\t%.0f\t%s\t%s\n",
+                       bincookie_domain(cookie),
+                       bincookie_domain_access_full(cookie) ? "TRUE" : "FALSE",
+                       bincookie_path(cookie),
+                       bincookie_expiration_time(cookie),
+                       bincookie_name(cookie),
+                       bincookie_value(cookie));
             }
+            cookie_index = 0;
         }
 
-        bincookie_free(bc);
+        free(bc);
     }
 
     return 0;
