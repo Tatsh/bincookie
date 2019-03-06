@@ -34,7 +34,9 @@ Be sure to `#include <bincookie.h>` (which is installed with `make install`).
 
 `bincookie_t *bincookie_init(const char *file_path)` - Initialise a `bincookie_t` type.
 
-`void bincookie_free(bincookie_t *cfile)` - Free a `bincookie_t` type.
+`bincookie_page_t *const bincookie_iter_pages(const bincookie_t *bc, bincookie_iter_state_t *const state)` - Iterate pages of a file.
+
+`bincookie_cookie_t *const bincookie_iter_cookies(const bincookie_page_t *page, unsigned int *cookie_index)` - Iterate cookies contained within a page. `cookie_index` must be set to 0 when first calling this.
 
 # Macros
 
@@ -42,61 +44,19 @@ Be sure to `#include <bincookie.h>` (which is installed with `make install`).
 
 `bool bincookie_domain_access_full(bincookie_cookie_t *cookie)` - Test if a cookie can be used by all subdomains.
 
-# Data structures
+`char *bincookie_domain(bincookie_cookie_t *cookie)` - Get the domain name for a cookie.
 
-## File
+`char *bincookie_path(bincookie_cookie_t *cookie)` - Get the path for a cookie.
 
-```c
-typedef struct {
-    unsigned char magic[4];
-    uint32_t num_pages;
-    bincookie_page_t **pages;
-} bincookie_t;
-```
+`char *bincookie_name(bincookie_cookie_t *cookie)` - Get the name of a cookie.
 
-### Fields
+`char *bincookie_value(bincookie_cookie_t *cookie)` - Get the value of a cookie.
 
-* `magic` - the string "cook"
-* `num_pages` - number of pages
-* `pages` - pointer to array of cookie pages
+`double bincookie_expiration_time(bincookie_cookie_t *cookie)` - Get the expiration time of a cookie as UNIX timestamp.
 
-## Cookie page
+`double bincookie_creation_time(bincookie_cookie_t *cookie)` - Get the creation time of a cookie as a UNIX timestamp.
 
-```c
-typedef struct {
-    uint32_t number_of_cookies;
-    bincookie_cookie_t **cookies;
-} bincookie_page_t;
-```
-
-### Fields
-
-* `number_of_cookies` - number of cookies contained in this page
-* `cookies` - pointer to array of cookies
-
-## Cookie data
-
-```c
-typedef struct {
-    bincookie_flag flags;
-    time_t creation_date;
-    time_t expiration_date;
-    char *domain;
-    char *name;
-    char *path;
-    char *value;
-} bincookie_cookie_t;
-```
-
-### Fields
-
-* `flags` - if the cookie is secure, HTTP-only, etc
-* `creation_date` - UNIX timestamp of creation date
-* `expiration_date` - UNIX timestamp of expiration date
-* `domain` - domain value. Can be `NULL`
-* `name` - name of cookie
-* `path` - path the cookie is allowed to be used on. Can be `NULL`
-* `value` - value of the cookie
+`void bincookie_iter_state_init(bincookie_iter_state_t s)` - Use this to zero a `bincookie_iter_state_t` structure.
 
 ## Flag enum
 
@@ -109,20 +69,24 @@ typedef enum {
 
 The value that stores whether or not a cookie is secure, HTTP-only, or any of these combinations is a single 32-bit integer, with 0 or more values OR'd together (`0` is the default value). To test for a particular property, such as HTTP-only, use the `&` operator: `cookie->flags & http_only`.
 
-# Examples
+# Example use
 
 ## Access all the cookie names in a file
 
 ```c
 bincookie_t *bc = bincookie_init("Cookies.binarycookies");
 unsigned int i, j;
+bincookie_page_t *page;
 bincookie_cookie_t *cookie;
+bincookie_iter_state_t state;
+unsigned int cookie_index = 0;
 
-for (i = 0; i < bc->num_pages; i++) {
-    for (j = 0, cookie = bc->pages[i]->cookies[j];
-         j < bc->pages[i]->number_of_cookies;
-         j++, cookie = bc->pages[i]->cookies[j]) {
-        printf("Name: %s\n", cookie->name);
+bincookie_iter_state_init(state);
+
+while ((page = bincookie_iter_pages(bc, &state)) != NULL) {
+    while ((cookie = bincookie_iter_cookies(page, &cookie_index)) != NULL) {
+        printf("Name: %s\n", bincookie_name(cookie));
     }
+    cookie_index = 0; // yes this is necessary
 }
 ```
