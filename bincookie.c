@@ -18,7 +18,6 @@ EXPORT
 bincookie_t *const bincookie_init(const char *file_path) {
     char magic[4];
     size_t read;
-
     FILE *binary_file = fopen(file_path, "rb");
 
     if (!binary_file) {
@@ -26,11 +25,9 @@ bincookie_t *const bincookie_init(const char *file_path) {
     }
 
     read = fread(magic, sizeof(magic), 1, binary_file);
-    assert(read == 1);
-
-    if (strncmp(magic, "cook", sizeof(magic))) {
-        errno = EIO;
+    if (read != 1 || strncmp(magic, "cook", sizeof(magic))) {
         fclose(binary_file);
+        errno = EIO;
         return NULL;
     }
 
@@ -38,12 +35,16 @@ bincookie_t *const bincookie_init(const char *file_path) {
     fseek(binary_file, 0, SEEK_END);
     size_t num_bytes = (size_t)ftell(binary_file);
     bincookie_t *cook = malloc(num_bytes);
+    if (cook == NULL) {
+        fclose(binary_file);
+        return NULL;
+    }
     memset(cook, 0, num_bytes);
-    assert(cook != NULL);
     rewind(binary_file);
     fread(cook, 1, num_bytes, binary_file);
-    cook->num_pages = __builtin_bswap32(cook->num_pages);
     fclose(binary_file);
+
+    cook->num_pages = __builtin_bswap32(cook->num_pages);
 
     // Fix page size numbers
     for (uint32_t i = 0; i < cook->num_pages; i++) {
