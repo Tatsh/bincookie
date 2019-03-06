@@ -8,9 +8,7 @@
 
 #include "bincookie.h"
 
-// https://msdn.microsoft.com/en-us/library/a3140177.aspx
 #if defined(_MSC_VER)
-#define __builtin_bswap32 _byteswap_ulong
 #define EXPORT
 #else
 #define EXPORT __attribute__((visibility("default")))

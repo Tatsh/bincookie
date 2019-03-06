@@ -20,20 +20,6 @@ typedef unsigned __int32 uint32_t;
 #else
 #include <stdint.h>
 #endif
-
-// http://www.transmissionzero.co.uk/computing/building-dlls-with-mingw/
-#if defined(_WIN32) && defined(WINDLL)
-#define ADDAPI __declspec(dllexport)
-#else
-#define ADDAPI
-#endif
-
-// Disable warnings about secure CRT, but still enable compatible signature
-// versions http://stackoverflow.com/a/119752/374110
-#ifdef _MSC_VER
-#define _CRT_SECURE_NO_WARNINGS
-#endif
-
 #include <time.h>
 
 //! Check if a cookie has the secure bit enabled (only to be accessed over
@@ -110,6 +96,12 @@ typedef struct {
     uint32_t num_pages;     /*!< Number of pages in this file */
     uint32_t page_sizes[];  /*!< Page sizes (same length as number of pages) */
 } bincookie_t;
+
+#if defined(_WIN32)
+#define ADDAPI __declspec(dllexport)
+#else
+#define ADDAPI
+#endif
 
 //! Read a bincookie file.
 /*!
