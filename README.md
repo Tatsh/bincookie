@@ -20,19 +20,13 @@ To build with the examples, add `-DWITH_EXAMPLES=yes` to step 4.
 
 Replace `<prefix>` with a value like `/usr/local`, `/usr/`, or `/opt/local` (MacPorts).
 
-## Framework
-
-Use a CMake command line like the following:
-
-```sh
-cmake -DCMAKE_INSTALL_PREFIX=<prefix> -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_FRAMEWORK=yes
-```
-
 # Functions
 
 Be sure to `#include <bincookie.h>` (which is installed with `make install`).
 
-`bincookie_t *bincookie_init(const char *file_path)` - Initialise a `bincookie_t` type.
+`bincookie_t *bincookie_init_path(const char *file_path)` - Initialise a `bincookie_t` type.
+
+`bincookie_t *bincookie_init_file(FILE *fin)` - Initialise a `bincookie_t` type with an open file handle.
 
 `bincookie_page_t *const bincookie_iter_pages(const bincookie_t *bc, bincookie_iter_state_t *const state)` - Iterate pages of a file.
 
@@ -74,7 +68,7 @@ The value that stores whether or not a cookie is secure, HTTP-only, or any of th
 ## Access all the cookie names in a file
 
 ```c
-bincookie_t *bc = bincookie_init("Cookies.binarycookies");
+bincookie_t *bc = bincookie_init_path("Cookies.binarycookies");
 unsigned int i, j;
 bincookie_page_t *page;
 bincookie_cookie_t *cookie;
