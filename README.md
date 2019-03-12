@@ -4,9 +4,19 @@ Apple has their own special binary cookie format, undocumented, in use on both O
 
 # How to build
 
-You can easily include the code statically with your app or you can build a library.
+There is no build process for this library on its own. Just include the header: `#include <bincookie.h>`.
 
-## Shared library
+## Installation
+
+### Header-only
+
+Just copy `bincookie.h` to somewhere in your project and include it.
+
+Package maintainers: if you do not want the example binary and do not want to have to install CMake, you only need to place `bincookie.h` in a standard include directory such as `/usr/include`.
+
+### CMake
+
+To build the documentation, make sure you have Doxygen installed.
 
 Install CMake and make sure it is in `PATH`. Then in your terminal:
 
@@ -19,6 +29,8 @@ Install CMake and make sure it is in `PATH`. Then in your terminal:
 To build with the examples, add `-DWITH_EXAMPLES=yes` to step 4.
 
 Replace `<prefix>` with a value like `/usr/local`, `/usr/`, or `/opt/local` (MacPorts).
+
+If you have Doxygen, build the documentation with `make doc`.
 
 # Functions
 
