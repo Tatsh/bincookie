@@ -24,7 +24,7 @@ if(WITH_EXAMPLES)
 endif()
 
 find_package(Doxygen)
-if(DOXYGEN_FOUND)
+if(DOXYGEN_FOUND AND NOT NO_DOCS)
   set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
   set(DOXYGEN_OUT ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
   configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
