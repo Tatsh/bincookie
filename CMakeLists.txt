@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
 include(GNUInstallDirs)
 
-set(BINCOOKIE_VERSION 0.0.2)
 add_library(bincookie INTERFACE)
 target_include_directories(
   bincookie
