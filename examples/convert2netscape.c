@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../bincookie.h"
+#include <bincookie.h>
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
 
     // Output in Netscape cookies.txt format
     for (int k = 1; k < argc; k++) {
-        bc = bincookie_init(argv[k]);
+        bc = bincookie_init_path(argv[k]);
 
         if (!bc) {
             continue;
