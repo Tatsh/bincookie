@@ -1,6 +1,8 @@
 /**
  * @file bincookie.h
  * @brief A parser for Apple's proprietary binary cookie storage format.
+ *
+ * Based on the Python script by Satishb3 <satishb3@securitylearn.net>
  */
 
 #ifndef _BINCOOKIE_H
@@ -17,9 +19,13 @@ extern "C" {
 #include <BaseTsd.h>
 #include <stddef.h>
 typedef unsigned __int32 uint32_t;
+typedef unsigned __int8 bool;
 #else
+#include <stdbool.h>
 #include <stdint.h>
 #endif
+#include <errno.h>
+#include <string.h>
 #include <time.h>
 
 //! Check if a cookie has the secure bit enabled (only to be accessed over
@@ -133,34 +139,101 @@ typedef struct {
     uint32_t page_sizes[];  /*!< Page sizes (same length as number of pages) */
 } bincookie_t;
 
-#if defined(_WIN32)
-#define ADDAPI __declspec(dllexport)
-#else
-#define ADDAPI
-#endif
+//! Read a bincookie file.
+/*!
+ \param fin Opened file handle.
+ \return Pointer to a bincookie_t structure or `NULL`.
+ */
+static inline bincookie_t *const bincookie_init_file(FILE *fin) {
+    const long last_pos = ftell(fin);
+    rewind(fin);
+    char magic[4];
+    size_t read = fread(magic, sizeof(magic), 1, fin);
+    fseek(fin, last_pos, SEEK_SET);
+    bool is_cook = magic[0] == 'c' && magic[1] == 'o' && magic[2] == 'o' &&
+                   magic[3] == 'k';
+    if (read != 1 || !is_cook) {
+        errno = EIO;
+        return NULL;
+    }
 
+    // Read entire file
+    fseek(fin, 0, SEEK_END);
+    size_t num_bytes = (size_t)ftell(fin);
+    bincookie_t *cook = malloc(num_bytes);
+    if (cook == NULL) {
+        return NULL;
+    }
+    memset(cook, 0, num_bytes);
+    rewind(fin);
+    fread(cook, 1, num_bytes, fin);
+
+    cook->num_pages = __builtin_bswap32(cook->num_pages);
+
+    // Fix page size numbers
+    for (uint32_t i = 0; i < cook->num_pages; i++) {
+        *(cook->page_sizes + i) = __builtin_bswap32(*(cook->page_sizes + i));
+    }
+
+    fseek(fin, last_pos, SEEK_SET);
+
+    return cook;
+}
 //! Read a bincookie file.
 /*!
  \param file_path File path string.
  \return Pointer to a bincookie_t structure or `NULL`.
  */
-ADDAPI bincookie_t *const bincookie_init(const char *file_path);
+static inline bincookie_t *const bincookie_init_path(const char *file_path) {
+    FILE *binary_file = fopen(file_path, "rb");
+
+    if (!binary_file) {
+        return NULL;
+    }
+
+    bincookie_t *ret = bincookie_init_file(binary_file);
+    fclose(binary_file);
+
+    return ret;
+}
 //! Iterate pages of a bincookie file.
 /*!
  \param bc Pointer to bincookie_t structure.
  \param s Pointer to bincookie_iter_state_t object.
  \return Pointer to a bincookie_page_t structure or `NULL`.
  */
-ADDAPI bincookie_page_t *const
-bincookie_iter_pages(const bincookie_t *bc, bincookie_iter_state_t *const s);
+static inline bincookie_page_t *const
+bincookie_iter_pages(const bincookie_t *bc,
+                     bincookie_iter_state_t *const state) {
+    if (state->page_offset == 0) {
+        state->page_offset = (uint32_t)(4 + sizeof(uint32_t) +
+                                        (sizeof(uint32_t) * bc->num_pages));
+    }
+    if (state->page_index < bc->num_pages) {
+        bincookie_page_t *page =
+            (bincookie_page_t *)((char *)bc + state->page_offset);
+        state->page_offset += bc->page_sizes[state->page_index];
+        state->page_index++;
+        return page;
+    }
+    return NULL;
+}
 //! Iterate cookies of a page.
 /*!
  \param page Pointer to bincookie_page_t structure.
  \param i Pointer to an integer to keep track of index.
  \return Pointer to a bincookie_cookie_t structure or `NULL`.
  */
-ADDAPI bincookie_cookie_t *const
-bincookie_iter_cookies(const bincookie_page_t *page, unsigned int *i);
+static inline bincookie_cookie_t *const
+bincookie_iter_cookies(const bincookie_page_t *page, unsigned int *i) {
+    if (*i < page->num_cookies) {
+        bincookie_cookie_t *ptr =
+            (bincookie_cookie_t *)((char *)page + page->cookie_offsets[*i]);
+        (*i)++;
+        return ptr;
+    }
+    return NULL;
+}
 
 #ifdef __cplusplus
 }
