@@ -139,7 +139,7 @@ typedef struct {
     uint32_t page_sizes[];  /*!< Page sizes (same length as number of pages) */
 } bincookie_t;
 
-//! Read a bincookie file.
+//! Read a binarycookies file.
 /*!
  \param fin Opened file handle.
  \return Pointer to a bincookie_t structure or `NULL`.
@@ -179,7 +179,7 @@ static inline bincookie_t *const bincookie_init_file(FILE *fin) {
 
     return cook;
 }
-//! Read a bincookie file.
+//! Read a binarycookies file.
 /*!
  \param file_path File path string.
  \return Pointer to a bincookie_t structure or `NULL`.
@@ -196,7 +196,7 @@ static inline bincookie_t *const bincookie_init_path(const char *file_path) {
 
     return ret;
 }
-//! Iterate pages of a bincookie file.
+//! Iterate pages of a binarycookies file.
 /*!
  \param bc Pointer to bincookie_t structure.
  \param s Pointer to bincookie_iter_state_t object.
