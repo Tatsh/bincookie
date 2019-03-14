@@ -1,4 +1,4 @@
-project(libbinarycookies)
+project(bincookie)
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
 include(GNUInstallDirs)
@@ -22,12 +22,15 @@ if(WITH_EXAMPLES)
   add_subdirectory(examples)
 endif()
 
-find_package(Doxygen)
-if(DOXYGEN_FOUND AND NOT NO_DOCS)
-  set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
-  set(DOXYGEN_OUT ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
-  configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-  add_custom_target(doc ALL
-                    COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+if(WITH_DOCS)
+  find_package(Doxygen)
+  if(DOXYGEN_FOUND)
+    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
+    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+    add_custom_target(doc ALL
+                      COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    # install(DIRECTORY )
+  endif()
 endif()
