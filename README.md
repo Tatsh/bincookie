@@ -16,8 +16,6 @@ Package maintainers: if you do not want the example binary and do not want to ha
 
 ### CMake
 
-To build the documentation, make sure you have Doxygen installed.
-
 Install CMake and make sure it is in `PATH`. Then in your terminal:
 
 1. `git clone https://github.com/Tatsh/bincookie.git`
@@ -28,9 +26,9 @@ Install CMake and make sure it is in `PATH`. Then in your terminal:
 
 To build with the examples, add `-DWITH_EXAMPLES=yes` to step 4.
 
-Replace `<prefix>` with a value like `/usr/local`, `/usr/`, or `/opt/local` (MacPorts).
+To build the documentation with Doxygen, add `-DWITH_DOCS=yes` to step 4.
 
-If you have Doxygen, build the documentation with `make doc`.
+Replace `<prefix>` with a value like `/usr/local`, `/usr/`, or `/opt/local` (MacPorts).
 
 # Functions
 
