@@ -3,6 +3,11 @@
 
 #include <bincookie.h>
 
+//! Entry point.
+/*!
+ * \param argc Argument count.
+ * \param argv Argument vector.
+ */
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         printf("Usage: %s [Cookies.bincookie files]\n", argv[0]);
