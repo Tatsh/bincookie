@@ -80,6 +80,7 @@ funcs
 gcda
 gcov
 gdiplus
+geninfo
 getabsfile
 ggdb
 gmock
