@@ -40,7 +40,7 @@ To build with the examples, add `-DWITH_EXAMPLES=ON` to step 4.
 
 To build the documentation with Doxygen, add `-DWITH_DOCS=ON` to step 4.
 
-To run tests, build with `DWITH_TESTS=ON` and run `ctest` after building. CMocka must be installed
+To run tests, build with `-DWITH_TESTS=ON` and run `ctest` after building. CMocka must be installed
 to build tests.
 
 Replace `<prefix>` with a value like `/usr/local`, `/usr/`, or `/opt/local` (MacPorts).
