@@ -1,0 +1,11 @@
+{
+  "configurations": [
+    {
+      "compilerPath": "/usr/bin/gcc",
+      "defines": [],
+      "includePath": ["${default}", "${workspaceFolder}"],
+      "name": "Linux"
+    }
+  ],
+  "version": 4
+}

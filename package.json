@@ -1,0 +1,33 @@
+{
+  "devDependencies": {
+    "@prettier/plugin-xml": "^3.2.1",
+    "cspell": "^7.3.6",
+    "prettier": "^3.0.3",
+    "prettier-plugin-ini": "^1.1.0",
+    "prettier-plugin-sort-json": "^3.1.0",
+    "prettier-plugin-toml": "^1.0.0"
+  },
+  "license": "MIT",
+  "name": "xirvik-tools",
+  "prettier": {
+    "endOfLine": "lf",
+    "iniSpaceAroundEquals": true,
+    "plugins": [
+      "@prettier/plugin-xml",
+      "prettier-plugin-ini",
+      "prettier-plugin-sort-json",
+      "prettier-plugin-toml"
+    ],
+    "printWidth": 100,
+    "singleQuote": true
+  },
+  "repository": "https://github.com/Tatsh/xirvik-tools",
+  "scripts": {
+    "check-formatting": "prettier -c '.*/**/*.json' '.*/**/*.y*ml' './**/*.md' './**/*.y*ml' && clang-format -n --Werror *.c *.h examples/*.c",
+    "check-spelling": "cspell --no-progress './**/*'  './**/.*'",
+    "clean-dict": "r=(); while IFS=$\\n read -r w; do ! rg --no-config -qi. -g '!.vscode/dictionary.txt' -m 1 \"$w\" . && r+=(\"$w\"); done < ./.vscode/dictionary.txt; j=$(printf \"|%s\" \"${r[@]}\"); j=\"^(${j:1})$\"; grep -Ev \"${j}\" ./.vscode/dictionary.txt > new && mv new ./.vscode/dictionary.txt",
+    "format": "prettier -w '.*/**/*.json' '.*/**/*.y*ml' './**/*.md' './**/*.y*ml' && clang-format -i *.c *.h examples/*.c",
+    "qa": "yarn check-spelling && yarn check-formatting"
+  },
+  "version": "0.4.5"
+}

@@ -38,3 +38,4 @@ Thumbs.db
 /build/
 /Doxyfile
 /.vscode/ipch/
+node_modules/

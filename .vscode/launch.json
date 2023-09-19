@@ -1,0 +1,12 @@
+{
+  "configurations": [
+    {
+      "cwd": "${workspaceRoot}",
+      "name": "Run tests",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceRoot}/build/general_tests"
+    }
+  ],
+  "version": "0.2.0"
+}
