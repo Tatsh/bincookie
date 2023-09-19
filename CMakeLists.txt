@@ -25,16 +25,14 @@ endif()
 
 if(WITH_DOCS)
   find_package(Doxygen REQUIRED)
-  if(DOXYGEN_FOUND)
-    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${DOXYGEN_OUT} @ONLY)
-    add_custom_target(
-      doc ALL
-      COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html
-            DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/doc/bincookie-0.1.2)
-  endif()
+  set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${DOXYGEN_OUT} @ONLY)
+  add_custom_target(
+    doc ALL
+    COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html
+          DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/doc/bincookie-0.1.2)
 endif()
 
 if(WITH_TESTS AND CMAKE_COMPILER_IS_GNUCXX)
