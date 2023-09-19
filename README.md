@@ -1,13 +1,21 @@
-# General
+# bincookie
 
+[![QA](https://github.com/Tatsh/bincookie/actions/workflows/qa.yml/badge.svg)](https://github.com/Tatsh/bincookie/actions/workflows/qa.yml)
+[![Tests](https://github.com/Tatsh/bincookie/actions/workflows/tests.yml/badge.svg)](https://github.com/Tatsh/bincookie/actions/workflows/tests.yml)
 [![Coverage Status](https://coveralls.io/repos/github/Tatsh/bincookie/badge.svg?branch=master)](https://coveralls.io/github/Tatsh/bincookie?branch=master)
+![GitHub tag (with filter)](https://img.shields.io/github/v/tag/Tatsh/bincookie)
+![GitHub](https://img.shields.io/github/license/Tatsh/bincookie)
+![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/bincookie/v0.0.1/master)
 
 Apple has their own special binary cookie format, undocumented, in use on both OS X and heavily on iOS.
 
 ## How to build
 
 There is no build process for this library on its own. Just include the header:
-`#include <bincookie.h>`.
+
+```c
+#include <bincookie.h>
+```
 
 ## Installation
 
