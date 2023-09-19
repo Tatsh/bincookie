@@ -31,8 +31,7 @@ int main(int argc, char *argv[]) {
         bincookie_iter_state_init(state);
 
         while ((page = bincookie_iter_pages(bc, &state)) != NULL) {
-            while ((cookie = bincookie_iter_cookies(page, &cookie_index)) !=
-                   NULL) {
+            while ((cookie = bincookie_iter_cookies(page, &cookie_index)) != NULL) {
                 printf("%s\t%s\t%s\t%.0f\t%s\t%s\n",
                        bincookie_domain(cookie),
                        bincookie_domain_access_full(cookie) ? "TRUE" : "FALSE",
