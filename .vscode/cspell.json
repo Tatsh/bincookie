@@ -70,6 +70,7 @@
     "build/**",
     "dist/**",
     "htmlcov/**",
+    "man/**",
     "node_modules"
   ],
   "language": "en-GB",

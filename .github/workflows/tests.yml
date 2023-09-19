@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install tools
-        run: pipx install cpp-coveralls && sudo apt-get update -y && sudo apt-get install -y libcmocka-dev doxygen lcov
+        run: pipx install cpp-coveralls && sudo apt-get update -y && sudo apt-get install -y libcmocka-dev doxygen graphviz lcov
       - name: Configure
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -DWITH_DOCS=ON -DWITH_TESTS=ON -DWITH_EXAMPLES=ON --install-prefix ${{github.workspace}}/build/prefix
       - name: Build

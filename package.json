@@ -28,7 +28,8 @@
     "check-spelling": "cspell --no-progress './**/*'  './**/.*'",
     "clean-dict": "r=(); while IFS=$\\n read -r w; do ! rg --no-config -qi. -g '!.vscode/dictionary.txt' -m 1 \"$w\" . && r+=(\"$w\"); done < ./.vscode/dictionary.txt; j=$(printf \"|%s\" \"${r[@]}\"); j=\"^(${j:1})$\"; grep -Ev \"${j}\" ./.vscode/dictionary.txt > new && mv new ./.vscode/dictionary.txt",
     "format": "prettier -w '.*/**/*.json' '.*/**/*.y*ml' './**/*.md' './**/*.y*ml' && clang-format -i *.c *.h examples/*.c && markdownlint-cli2 --fix '**/*.md' '#node_modules'",
+    "gen-manpage": "cd build && ninja doc && cp docs/man/man3/bincookie.h.3 ../man/",
     "qa": "yarn check-spelling && yarn check-formatting"
   },
-  "version": "0.1.1"
+  "version": "0.1.2"
 }

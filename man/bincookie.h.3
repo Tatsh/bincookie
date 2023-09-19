@@ -1,0 +1,409 @@
+.TH "bincookie.h" 3Version v0.1.2" "bincookie" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+bincookie.h \- A parser for Apple's proprietary binary cookie storage format\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBbincookie_iter_state_t\fP"
+.br
+.RI "Keeps track of iteration state when iterating cookie file pages\&. "
+.ti -1c
+.RI "struct \fBbincookie_cookie_t\fP"
+.br
+.RI "Cookie data structure\&. "
+.ti -1c
+.RI "struct \fBbincookie_page_t\fP"
+.br
+.RI "Cookie page structure\&. A page can consist of 1 or more cookies\&. "
+.ti -1c
+.RI "struct \fBbincookie_t\fP"
+.br
+.RI "bincookie file structure\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBbincookie_is_secure\fP(cookie_ptr)"
+.br
+.ti -1c
+.RI "#define \fBbincookie_domain_access_full\fP(cookie_ptr)"
+.br
+.RI "Check if a cookie can be used on all subdomains of its original domain\&. "
+.ti -1c
+.RI "#define \fBbincookie_iter_state_init\fP(s)"
+.br
+.RI "Initialise a \fBbincookie_iter_state_t\fP structure\&. "
+.ti -1c
+.RI "#define \fBbincookie_domain\fP(c)"
+.br
+.RI "Get the domain of a cookie\&. "
+.ti -1c
+.RI "#define \fBbincookie_path\fP(c)"
+.br
+.RI "Get the path of a cookie\&. "
+.ti -1c
+.RI "#define \fBbincookie_name\fP(c)"
+.br
+.RI "Get the name of a cookie\&. "
+.ti -1c
+.RI "#define \fBbincookie_value\fP(c)"
+.br
+.RI "Get the value of a cookie\&. "
+.ti -1c
+.RI "#define \fBAPPLE_EPOCH_OFFSET\fP   978307200"
+.br
+.RI "Difference between Apple's epoch (2001-01-01) and UNIX\&. "
+.ti -1c
+.RI "#define \fBbincookie_expiration_time\fP(c)"
+.br
+.RI "Get the expiration time of a cookie\&. "
+.ti -1c
+.RI "#define \fBbincookie_creation_time\fP(c)"
+.br
+.RI "Get the creation time of a cookie\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBbincookie_flag\fP { \fBsecure\fP, \fBhttp_only\fP }"
+.br
+.RI "Security enabled for a cookie\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBbincookie_t\fP *const \fBbincookie_init_file\fP (FILE *fin)"
+.br
+.RI "Read a binarycookies file\&. "
+.ti -1c
+.RI "static \fBbincookie_t\fP *const \fBbincookie_init_path\fP (const char *file_path)"
+.br
+.RI "Read a binarycookies file\&. "
+.ti -1c
+.RI "\fBbincookie_page_t\fP *const \fBbincookie_iter_pages\fP (const \fBbincookie_t\fP *bc, \fBbincookie_iter_state_t\fP *const state)"
+.br
+.RI "Iterate pages of a binarycookies file\&. "
+.ti -1c
+.RI "\fBbincookie_cookie_t\fP *const \fBbincookie_iter_cookies\fP (const \fBbincookie_page_t\fP *page, unsigned int *i)"
+.br
+.RI "Iterate cookies of a page\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+A parser for Apple's proprietary binary cookie storage format\&. 
+
+Based on the Python script by Satishb3 satishb3@securitylearn.net 
+.PP
+Definition in file \fBbincookie\&.h\fP\&.
+.SH "Data Structure Documentation"
+.PP 
+.SH "struct bincookie_iter_state_t"
+.PP 
+Keeps track of iteration state when iterating cookie file pages\&. 
+.PP
+Definition at line \fB109\fP of file \fBbincookie\&.h\fP\&.
+.PP
+\fBData Fields:\fP
+.RS 4
+uint32_t \fIpage_index\fP Current page\&. 
+.br
+.PP
+uint32_t \fIpage_offset\fP Current offset into the buffer\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct bincookie_cookie_t"
+.PP 
+Cookie data structure\&. 
+.PP
+Definition at line \fB115\fP of file \fBbincookie\&.h\fP\&.
+.PP
+\fBData Fields:\fP
+.RS 4
+double \fIcreate_date_epoch\fP Creation date in Apple epoch format\&. 
+.br
+.PP
+uint32_t \fIdomain_offset\fP Offset of the domain name\&. 
+.br
+.PP
+double \fIexpiry_date_epoch\fP Expiry date in Apple epoch format\&. 
+.br
+.PP
+\fBbincookie_flag\fP \fIflags\fP Flags used with the cookie\&. 
+.br
+.PP
+uint32_t \fIname_offset\fP Offset of the name of the cookie\&. 
+.br
+.PP
+uint32_t \fIpath_offset\fP Offset of the path\&. 
+.br
+.PP
+uint32_t \fIsize\fP Size of the cookie data\&. 
+.br
+.PP
+uint32_t \fIvalue_offset\fP Offset of the value\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct bincookie_page_t"
+.PP 
+Cookie page structure\&. A page can consist of 1 or more cookies\&. 
+.PP
+Definition at line \fB133\fP of file \fBbincookie\&.h\fP\&.
+.PP
+\fBData Fields:\fP
+.RS 4
+uint32_t \fIcookie_offsets[]\fP Cookie offset values\&. 
+.br
+.PP
+uint32_t \fInum_cookies\fP Number of cookies contained in this page\&. 
+.br
+.PP
+.RE
+.PP
+.SH "struct bincookie_t"
+.PP 
+bincookie file structure\&. 
+.PP
+Definition at line \fB141\fP of file \fBbincookie\&.h\fP\&.
+.PP
+\fBData Fields:\fP
+.RS 4
+unsigned char \fImagic[4]\fP Magic: 'cook' 
+.br
+.PP
+uint32_t \fInum_pages\fP Number of pages in this file 
+.br
+.PP
+uint32_t \fIpage_sizes[]\fP Page sizes (same length as number of pages) 
+.br
+.PP
+.RE
+.PP
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define bincookie_creation_time(c)"
+
+.PP
+Get the creation time of a cookie\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIc\fP Pointer to a \fBbincookie_cookie_t\fP structure\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB98\fP of file \fBbincookie\&.h\fP\&.
+.SS "#define bincookie_domain(c)"
+
+.PP
+Get the domain of a cookie\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIc\fP Pointer to a \fBbincookie_cookie_t\fP structure\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB61\fP of file \fBbincookie\&.h\fP\&.
+.SS "#define bincookie_domain_access_full(cookie_ptr)"
+
+.PP
+Check if a cookie can be used on all subdomains of its original domain\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcookie_ptr\fP Pointer to a \fBbincookie_cookie_t\fP structure\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB47\fP of file \fBbincookie\&.h\fP\&.
+.SS "#define bincookie_expiration_time(c)"
+
+.PP
+Get the expiration time of a cookie\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIc\fP Pointer to a \fBbincookie_cookie_t\fP structure\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB91\fP of file \fBbincookie\&.h\fP\&.
+.SS "#define bincookie_is_secure(cookie_ptr)"
+Check if a cookie has the secure bit enabled (only to be accessed over HTTPS)\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIcookie_ptr\fP Pointer to a \fBbincookie_cookie_t\fP data structure\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB40\fP of file \fBbincookie\&.h\fP\&.
+.SS "#define bincookie_iter_state_init(s)"
+
+.PP
+Initialise a \fBbincookie_iter_state_t\fP structure\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIs\fP \fBbincookie_iter_state_t\fP structure\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB56\fP of file \fBbincookie\&.h\fP\&.
+.SS "#define bincookie_name(c)"
+
+.PP
+Get the name of a cookie\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIc\fP Pointer to a \fBbincookie_cookie_t\fP structure\&. \\ 
+.RE
+.PP
+
+.PP
+Definition at line \fB77\fP of file \fBbincookie\&.h\fP\&.
+.SS "#define bincookie_path(c)"
+
+.PP
+Get the path of a cookie\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIc\fP Pointer to a \fBbincookie_cookie_t\fP structure\&. \\ 
+.RE
+.PP
+
+.PP
+Definition at line \fB69\fP of file \fBbincookie\&.h\fP\&.
+.SS "#define bincookie_value(c)"
+
+.PP
+Get the value of a cookie\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIc\fP Pointer to a \fBbincookie_cookie_t\fP structure\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB82\fP of file \fBbincookie\&.h\fP\&.
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBbincookie_flag\fP"
+
+.PP
+Security enabled for a cookie\&. A cookie can be either or these values or 2 or more values OR'd together\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIsecure \fP\fP
+Cookie can only be used with HTTPS 
+.TP
+\fB\fIhttp_only \fP\fP
+Cookie cannot be accessed by JavaScript 
+.PP
+Definition at line \fB103\fP of file \fBbincookie\&.h\fP\&.
+.SH "Function Documentation"
+.PP 
+.SS "\fBbincookie_t\fP *const bincookie_init_file (FILE * fin)\fC [inline]\fP"
+
+.PP
+Read a binarycookies file\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfin\fP Opened file handle\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to a \fBbincookie_t\fP structure or \fCNULL\fP\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB152\fP of file \fBbincookie\&.h\fP\&.
+.SS "static \fBbincookie_t\fP *const bincookie_init_path (const char * file_path)\fC [inline]\fP, \fC [static]\fP"
+
+.PP
+Read a binarycookies file\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfile_path\fP File path string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to a \fBbincookie_t\fP structure or \fCNULL\fP\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB188\fP of file \fBbincookie\&.h\fP\&.
+.SS "\fBbincookie_cookie_t\fP *const bincookie_iter_cookies (const \fBbincookie_page_t\fP * page, unsigned int * i)\fC [inline]\fP"
+
+.PP
+Iterate cookies of a page\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpage\fP Pointer to \fBbincookie_page_t\fP structure\&. 
+.br
+\fIi\fP Pointer to an integer to keep track of index\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to a \fBbincookie_cookie_t\fP structure or \fCNULL\fP\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB222\fP of file \fBbincookie\&.h\fP\&.
+.SS "\fBbincookie_page_t\fP *const bincookie_iter_pages (const \fBbincookie_t\fP * bc, \fBbincookie_iter_state_t\fP *const state)\fC [inline]\fP"
+
+.PP
+Iterate pages of a binarycookies file\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIbc\fP Pointer to \fBbincookie_t\fP structure\&. 
+.br
+\fIstate\fP Pointer to \fBbincookie_iter_state_t\fP object\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to a \fBbincookie_page_t\fP structure or \fCNULL\fP\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB203\fP of file \fBbincookie\&.h\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for bincookie from the source code\&.

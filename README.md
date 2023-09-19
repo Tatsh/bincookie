@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/Tatsh/bincookie/badge.svg?branch=master)](https://coveralls.io/github/Tatsh/bincookie?branch=master)
 ![GitHub tag (with filter)](https://img.shields.io/github/v/tag/Tatsh/bincookie)
 ![GitHub](https://img.shields.io/github/license/Tatsh/bincookie)
-![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/bincookie/v0.1.1/master)
+![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/bincookie/v0.1.2/master)
 
 Apple has their own special binary cookie format, undocumented, in use on both OS X and heavily on iOS.
 
@@ -49,17 +49,17 @@ Replace `<prefix>` with a value like `/usr/local`, `/usr/`, or `/opt/local` (Mac
 
 Be sure to `#include <bincookie.h>` (which is installed with `make install`).
 
-`bincookie_t *bincookie_init_path(const char *file_path)` - Initialise a `bincookie_t` type.
+`bincookie_t *const bincookie_init_path(const char *file_path)` - Initialise a `bincookie_t` type.
 
-`bincookie_t *bincookie_init_file(FILE *fin)` - Initialise a `bincookie_t` type with an open file handle.
+`bincookie_t *const bincookie_init_file(FILE *fin)` - Initialise a `bincookie_t` type with an open
+file handle.
 
 `bincookie_page_t *const bincookie_iter_pages(const bincookie_t *bc, bincookie_iter_state_t *const state)`
-
-- Iterate pages of a file.
+Iterate pages of a file.
 
 `bincookie_cookie_t *const bincookie_iter_cookies(const bincookie_page_t *page, unsigned int *cookie_index)`
-
-- Iterate cookies contained within a page. `cookie_index` must be set to 0 when first calling this.
+Iterate cookies contained within a page. `cookie_index` must be set to 0 before calling this
+(including in between iteration of pages).
 
 ## Macros
 

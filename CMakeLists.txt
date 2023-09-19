@@ -14,24 +14,26 @@ if(MSVC)
   add_definitions(/D_CRT_SECURE_NO_WARNINGS /D__builtin_bswap32=_byteswap_ulong)
 endif()
 
-install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/bincookie.h"
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/bincookie.h
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/man/bincookie.h.3
+        DESTINATION ${CMAKE_INSTALL_MANDIR}/man3)
 
 if(WITH_EXAMPLES)
   add_subdirectory(examples)
 endif()
 
 if(WITH_DOCS)
-  find_package(Doxygen)
+  find_package(Doxygen REQUIRED)
   if(DOXYGEN_FOUND)
-    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
     set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
-    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${DOXYGEN_OUT} @ONLY)
     add_custom_target(
       doc ALL
       COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-    # install(DIRECTORY )
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html
+            DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/doc/bincookie-0.1.2)
   endif()
 endif()
 

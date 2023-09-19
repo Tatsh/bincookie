@@ -12,6 +12,7 @@
 extern "C" {
 #endif
 
+//! \cond
 // https://github.com/nodejs/http-parser/blob/master/http_parser.h#L32
 #include <sys/types.h>
 #if defined(_WIN32) && !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER < 1600) &&         \
@@ -29,6 +30,7 @@ typedef unsigned __int8 bool;
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+//! \endcond
 
 //! Check if a cookie has the secure bit enabled (only to be accessed over
 //! HTTPS).
@@ -188,7 +190,7 @@ static inline bincookie_t *const bincookie_init_path(const char *file_path) {
 //! Iterate pages of a binarycookies file.
 /*!
  \param bc Pointer to bincookie_t structure.
- \param s Pointer to bincookie_iter_state_t object.
+ \param state Pointer to bincookie_iter_state_t object.
  \return Pointer to a bincookie_page_t structure or `NULL`.
  */
 static inline bincookie_page_t *const bincookie_iter_pages(const bincookie_t *bc,

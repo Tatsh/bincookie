@@ -35,6 +35,7 @@ cookiesize
 cppdbg
 cpptools
 ctest
+datarootdir
 datetime
 dcmake
 deprecatedlist
@@ -123,6 +124,7 @@ libiconv
 macrofile
 mainpage
 makevar
+mandir
 mathjax
 mdfile
 memb
