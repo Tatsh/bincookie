@@ -1,10 +1,13 @@
 # General
 
+[![Coverage Status](https://coveralls.io/repos/github/Tatsh/bincookie/badge.svg?branch=master)](https://coveralls.io/github/Tatsh/bincookie?branch=master)
+
 Apple has their own special binary cookie format, undocumented, in use on both OS X and heavily on iOS.
 
-# How to build
+## How to build
 
-There is no build process for this library on its own. Just include the header: `#include <bincookie.h>`.
+There is no build process for this library on its own. Just include the header:
+`#include <bincookie.h>`.
 
 ## Installation
 
@@ -12,7 +15,8 @@ There is no build process for this library on its own. Just include the header: 
 
 Just copy `bincookie.h` to somewhere in your project and include it.
 
-Package maintainers: if you do not want the example binary and do not want to have to install CMake, you only need to place `bincookie.h` in a standard include directory such as `/usr/include`.
+Package maintainers: if you do not want the example binary and do not want to have to install CMake,
+you only need to place `bincookie.h` in a standard include directory such as `/usr/include`.
 
 ### CMake
 
@@ -24,13 +28,16 @@ Install CMake and make sure it is in `PATH`. Then in your terminal:
 4. `cmake -DCMAKE_INSTALL_PREFIX=<prefix> -DCMAKE_BUILD_TYPE=RelWithDebInfo`
 5. `make install`
 
-To build with the examples, add `-DWITH_EXAMPLES=yes` to step 4.
+To build with the examples, add `-DWITH_EXAMPLES=ON` to step 4.
 
-To build the documentation with Doxygen, add `-DWITH_DOCS=yes` to step 4.
+To build the documentation with Doxygen, add `-DWITH_DOCS=ON` to step 4.
+
+To run tests, build with `DWITH_TESTS=ON` and run `ctest` after building. CMocka must be installed
+to build tests.
 
 Replace `<prefix>` with a value like `/usr/local`, `/usr/`, or `/opt/local` (MacPorts).
 
-# Functions
+## Functions
 
 Be sure to `#include <bincookie.h>` (which is installed with `make install`).
 
@@ -38,15 +45,20 @@ Be sure to `#include <bincookie.h>` (which is installed with `make install`).
 
 `bincookie_t *bincookie_init_file(FILE *fin)` - Initialise a `bincookie_t` type with an open file handle.
 
-`bincookie_page_t *const bincookie_iter_pages(const bincookie_t *bc, bincookie_iter_state_t *const state)` - Iterate pages of a file.
+`bincookie_page_t *const bincookie_iter_pages(const bincookie_t *bc, bincookie_iter_state_t *const state)`
 
-`bincookie_cookie_t *const bincookie_iter_cookies(const bincookie_page_t *page, unsigned int *cookie_index)` - Iterate cookies contained within a page. `cookie_index` must be set to 0 when first calling this.
+- Iterate pages of a file.
 
-# Macros
+`bincookie_cookie_t *const bincookie_iter_cookies(const bincookie_page_t *page, unsigned int *cookie_index)`
+
+- Iterate cookies contained within a page. `cookie_index` must be set to 0 when first calling this.
+
+## Macros
 
 `bool bincookie_is_secure(bincookie_cookie_t *cookie)` - Test if a cookie has secure bit set.
 
-`bool bincookie_domain_access_full(bincookie_cookie_t *cookie)` - Test if a cookie can be used by all subdomains.
+`bool bincookie_domain_access_full(bincookie_cookie_t *cookie)` - Test if a cookie can be used by all
+subdomains.
 
 `char *bincookie_domain(bincookie_cookie_t *cookie)` - Get the domain name for a cookie.
 
@@ -56,11 +68,14 @@ Be sure to `#include <bincookie.h>` (which is installed with `make install`).
 
 `char *bincookie_value(bincookie_cookie_t *cookie)` - Get the value of a cookie.
 
-`double bincookie_expiration_time(bincookie_cookie_t *cookie)` - Get the expiration time of a cookie as UNIX timestamp.
+`double bincookie_expiration_time(bincookie_cookie_t *cookie)` - Get the expiration time of a cookie
+as UNIX timestamp.
 
-`double bincookie_creation_time(bincookie_cookie_t *cookie)` - Get the creation time of a cookie as a UNIX timestamp.
+`double bincookie_creation_time(bincookie_cookie_t *cookie)` - Get the creation time of a cookie as
+a UNIX timestamp.
 
-`void bincookie_iter_state_init(bincookie_iter_state_t s)` - Use this to zero a `bincookie_iter_state_t` structure.
+`void bincookie_iter_state_init(bincookie_iter_state_t s)` - Use this to zero a
+`bincookie_iter_state_t` structure.
 
 ## Flag enum
 
@@ -71,9 +86,11 @@ typedef enum {
 } bincookie_flag;
 ```
 
-The value that stores whether or not a cookie is secure, HTTP-only, or any of these combinations is a single 32-bit integer, with 0 or more values OR'd together (`0` is the default value). To test for a particular property, such as HTTP-only, use the `&` operator: `cookie->flags & http_only`.
+The value that stores whether or not a cookie is secure, HTTP-only, or any of these combinations is
+a single 32-bit integer, with 0 or more values OR'd together (`0` is the default value). To test for
+a particular property, such as HTTP-only, use the `&` operator: `cookie->flags & http_only`.
 
-# Example use
+## Example use
 
 ## Access all the cookie names in a file
 

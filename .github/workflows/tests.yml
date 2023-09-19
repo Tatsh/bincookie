@@ -1,0 +1,31 @@
+---
+jobs:
+  build:
+    env:
+      COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install tools
+        run: pipx install cpp-coveralls && sudo apt-get update -y && sudo apt-get install -y libcmocka-dev doxygen lcov
+      - name: Configure
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=ON -DWITH_DOCS=ON -DWITH_TESTS=ON -DWITH_EXAMPLES=ON --install-prefix ${{github.workspace}}/build/prefix
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build
+      - name: Install
+        run: cmake --install ${{github.workspace}}/build
+      - name: Run tests
+        run: ctest --test-dir ${{github.workspace}}/build
+      - name: Generate coverage information
+        run: geninfo '--exclude=*/test.c' -b ${{github.workspace}} -o coverage1.info ${{github.workspace}}/build/CMakeFiles/general_tests.dir
+      - name: Coveralls
+        run: coveralls -i bincookie.h
+name: Tests
+'on':
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master

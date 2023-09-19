@@ -10,15 +10,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
+      - name: Install tools
+        run: sudo apt-get update -y && sudo apt-get install -y libcmocka-dev
       - run: |
-          cmake -DWITH_EXAMPLES=ON .
+          cmake -DWITH_EXAMPLES=ON -DWITH_TESTS=ON .
           make
-
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
@@ -27,7 +27,6 @@ jobs:
       fail-fast: false
       matrix:
         language: ['cpp', 'python']
-#
 name: CodeQL
 'on':
   pull_request:

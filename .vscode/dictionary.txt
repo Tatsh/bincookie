@@ -34,6 +34,7 @@ cond
 cookiesize
 cppdbg
 cpptools
+ctest
 datetime
 dcmake
 deprecatedlist
@@ -117,6 +118,7 @@ labelfontsize
 lcov
 libc
 libclang
+libcmocka
 libiconv
 macrofile
 mainpage

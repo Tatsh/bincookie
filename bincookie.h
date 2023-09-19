@@ -26,6 +26,7 @@ typedef unsigned __int8 bool;
 #endif
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
@@ -152,14 +153,16 @@ static inline bincookie_t *const bincookie_init_file(FILE *fin) {
     // Read entire file
     fseek(fin, 0, SEEK_END);
     size_t num_bytes = (size_t)ftell(fin);
-    bincookie_t *cook = malloc(num_bytes);
+    bincookie_t *cook = (bincookie_t *)malloc(num_bytes);
     // LCOV_EXCL_START
     if (cook == NULL) {
         return NULL;
     } // LCOV_EXCL_STOP
     memset(cook, 0, num_bytes);
     rewind(fin);
-    fread(cook, num_bytes, 1, fin);
+    if (fread(cook, num_bytes, 1, fin) != 1) {
+        return NULL;
+    }
     cook->num_pages = __builtin_bswap32(cook->num_pages);
     // Fix page size numbers
     for (uint32_t i = 0; i < cook->num_pages; i++) {
