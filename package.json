@@ -30,5 +30,5 @@
     "format": "prettier -w '.*/**/*.json' '.*/**/*.y*ml' './**/*.md' './**/*.y*ml' && clang-format -i *.c *.h examples/*.c && markdownlint-cli2 --fix '**/*.md' '#node_modules'",
     "qa": "yarn check-spelling && yarn check-formatting"
   },
-  "version": "0.0.1"
+  "version": "0.1.1"
 }
