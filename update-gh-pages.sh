@@ -18,8 +18,9 @@ git clean -dfx .
 rsync --progress --force --recursive --links --times --verbose --dirs \
     "${project_dir}/build/docs/html/" .
 git add .
-git commit -m "Update documentation to ${CZ_POST_CURRENT_VERSION:-$(git tag -l | sort | tail -n 1)}"
-git push
+if git commit -m "Update documentation to ${CZ_POST_CURRENT_VERSION:-$(git tag -l | sort | tail -n 1)}"; then
+    git push
+fi
 popd
 git up
 git push
