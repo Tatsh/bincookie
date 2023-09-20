@@ -1,6 +1,6 @@
 {
   "commitizen": {
-    "post_bump_hooks": ["update-gh-pages.sh"],
+    "post_bump_hooks": ["./update-gh-pages.sh"],
     "tag_format": "v$version",
     "version_files": [
       "CMakeLists.txt",
