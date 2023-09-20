@@ -21,3 +21,6 @@ git add .
 git commit -m "Update documentation to ${CZ_POST_CURRENT_VERSION:-$(git tag -l | sort | tail -n 1)}"
 git push
 popd
+git up
+git push
+git push --tags
