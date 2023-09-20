@@ -36,7 +36,7 @@ Install CMake and make sure it is in `PATH`. Then in your terminal:
 4. `cmake -DCMAKE_INSTALL_PREFIX=<prefix> -DCMAKE_BUILD_TYPE=RelWithDebInfo`
 5. `make install`
 
-To build with the examples, add `-DWITH_EXAMPLES=ON` to step 4.
+To build the examples, add `-DWITH_EXAMPLES=ON` to step 4.
 
 To build the documentation with Doxygen, add `-DWITH_DOCS=ON` to step 4.
 
