@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/Tatsh/bincookie/badge.svg?branch=master)](https://coveralls.io/github/Tatsh/bincookie?branch=master)
 ![GitHub tag (with filter)](https://img.shields.io/github/v/tag/Tatsh/bincookie)
 ![GitHub](https://img.shields.io/github/license/Tatsh/bincookie)
-![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/bincookie/v0.1.4/master)
+![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/bincookie/v0.1.5/master)
 
 Apple has their own special binary cookie format, undocumented, in use on both OS X and heavily on iOS.
 

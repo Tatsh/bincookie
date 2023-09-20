@@ -32,5 +32,5 @@
     "gen-manpage": "cd build && ninja doc && cp docs/man/man3/bincookie.h.3 ../man/",
     "qa": "yarn check-spelling && yarn check-formatting"
   },
-  "version": "0.1.4"
+  "version": "0.1.5"
 }
