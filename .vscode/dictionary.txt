@@ -181,6 +181,7 @@ rtfd
 satishb
 searchdata
 searchengine
+shellcheck
 showinitializer
 sideeffect
 smath

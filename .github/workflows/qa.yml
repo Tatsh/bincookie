@@ -4,8 +4,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Install shellcheck
+        run: sudo apt-get update -y && sudo apt-get install -y shellcheck
       - name: Install dependencies (Yarn)
         run: yarn
+      - name: Run shellcheck
+        run: yarn shellcheck
       - name: Check spelling
         run: yarn check-spelling
       - name: Check formatting
