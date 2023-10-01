@@ -197,6 +197,7 @@ subgrouping
 tagfile
 tagfiles
 tagname
+tatsh
 testlist
 todolist
 tranparent
