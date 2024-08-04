@@ -133,6 +133,11 @@ void test_bad_magic(void **state) {
     expect_value(__wrap_fclose, stream, ff);
     will_return(__wrap_fclose, 0);
 
+    expect_value(__wrap_fseek, stream, ff);
+    expect_value(__wrap_fseek, offset, 0);
+    expect_value(__wrap_fseek, whence, SEEK_SET);
+    will_return(__wrap_fseek, 0);
+
     assert_null(bincookie_init_path("bad_magic.binarycookies"));
     assert_int_equal(errno, EIO);
 }

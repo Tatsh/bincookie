@@ -146,30 +146,35 @@ static inline bincookie_t *const bincookie_init_file(FILE *fin) {
     const long last_pos = ftell(fin);
     rewind(fin);
     char magic[4];
+    bincookie_t *cook = NULL;
     size_t read = fread(magic, sizeof(magic), 1, fin);
     bool is_cook = magic[0] == 'c' && magic[1] == 'o' && magic[2] == 'o' && magic[3] == 'k';
     if (read != 1 || !is_cook) {
         errno = EIO;
-        return NULL;
+        goto done;
     }
     // Read entire file
     fseek(fin, 0, SEEK_END);
     size_t num_bytes = (size_t)ftell(fin);
-    bincookie_t *cook = (bincookie_t *)malloc(num_bytes);
+    cook = (bincookie_t *)malloc(num_bytes);
     // LCOV_EXCL_START
     if (cook == NULL) {
-        return NULL;
+        goto done;
     } // LCOV_EXCL_STOP
     memset(cook, 0, num_bytes);
     rewind(fin);
+    // LCOV_EXCL_START
     if (fread(cook, num_bytes, 1, fin) != 1) {
-        return NULL;
-    }
+        free(cook);
+        cook = NULL;
+        goto done;
+    } // LCOV_EXCL_STOP
     cook->num_pages = __builtin_bswap32(cook->num_pages);
     // Fix page size numbers
     for (uint32_t i = 0; i < cook->num_pages; i++) {
         *(cook->page_sizes + i) = __builtin_bswap32(*(cook->page_sizes + i));
     }
+done:
     fseek(fin, last_pos, SEEK_SET);
     return cook;
 }
