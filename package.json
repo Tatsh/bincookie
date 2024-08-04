@@ -33,5 +33,5 @@
     "qa": "yarn check-spelling && yarn check-formatting",
     "shellcheck": "shellcheck post-bump.sh"
   },
-  "version": "0.1.6"
+  "version": "0.1.7"
 }
