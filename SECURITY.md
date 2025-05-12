@@ -8,4 +8,4 @@
 
 ## Reporting a Vulnerability
 
-Send me a direct message [here](https://noagendasocial.com/@Tatsh).
+Send me a direct message [on Bsky](https://bsky.app/profile/tatsh.bsky.social).

@@ -3,6 +3,7 @@ binarycookie
 binarycookies
 bincookie
 bindir
+bsky
 bswap
 buglist
 byteswap
