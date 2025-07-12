@@ -64,7 +64,6 @@ pylance
 pytest
 reflow
 satishb
-shellcheck
 strequal
 sublicense
 tatsh
