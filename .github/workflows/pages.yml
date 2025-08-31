@@ -9,7 +9,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Setup Pages
@@ -22,11 +22,11 @@ jobs:
         run: >-
           cmake -DWITH_DOCS=ON -DCMAKE_BUILD_TYPE=Release -B ${{github.workspace}}/build
       - name: Build documentation
-        run: cmake --build ${{github.workspace}}/build --verbose --config Release --target doc
+        run: cmake --build ${{github.workspace}}/build --verbose --config Release --target docs
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: ${{github.workspace}}/build/docs/html
+          path: ${{github.workspace}}/build/html
       - id: deployment
         name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4

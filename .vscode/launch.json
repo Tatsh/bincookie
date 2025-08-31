@@ -3,9 +3,9 @@
     {
       "cwd": "${workspaceRoot}",
       "name": "Run tests",
-      "type": "cppdbg",
+      "program": "${workspaceRoot}/build/general_tests",
       "request": "launch",
-      "program": "${workspaceRoot}/build/general_tests"
+      "type": "cppdbg"
     }
   ],
   "version": "0.2.0"

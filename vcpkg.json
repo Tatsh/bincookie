@@ -1,0 +1,15 @@
+{
+  "dependencies": [
+    {
+      "name": "cmocka",
+      "platform": "linux|mingw"
+    }
+  ],
+  "description": "Header-only binarycookies parser.",
+  "documentation": "https://bincookie.readthedocs.org",
+  "homepage": "https://tatsh.github.io/bincookie/",
+  "license": "MIT",
+  "maintainers": ["Andrew Udvare <audvare@gmail.com>"],
+  "name": "bincookie",
+  "version": "0.1.7"
+}

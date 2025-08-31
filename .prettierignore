@@ -1,5 +1,14 @@
+*.1
+*.c
+*.cpp
+*.h
+*.in
 *.info
+*.j2
+*.jsonnet
 *.kate-swp
+*.libjsonnet
+*.lock
 *.log
 *~
 .*.swp
@@ -8,6 +17,7 @@
 .cspellcache
 .directory
 .pnp.*
+/.yarn/**/*.cjs
 /.yarn/install-state.gz
 /CMakeUserPresets.json
 /build/

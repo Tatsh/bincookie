@@ -6,7 +6,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - name: Install tools
         run: pipx install cpp-coveralls && sudo apt-get update -y && sudo apt-get install -y libcmocka-dev doxygen graphviz lcov
       - name: Configure
@@ -18,9 +18,12 @@ jobs:
       - name: Run tests
         run: ctest --test-dir ${{github.workspace}}/build
       - name: Generate coverage information
-        run: geninfo '--exclude=*/test.c' -b ${{github.workspace}} -o coverage1.info ${{github.workspace}}/build/CMakeFiles/general_tests.dir
+        run: >-
+          lcov -c -d ${{github.workspace}}/build -o coverage1.lcov
+          --include bincookie.h
+          --keep-going
       - name: Coveralls
-        run: coveralls -i bincookie.h
+        uses: coverallsapp/github-action@v2
 name: Tests
 'on':
   pull_request:

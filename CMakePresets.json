@@ -1,0 +1,13 @@
+{
+  "configurePresets": [
+    {
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      },
+      "generator": "Ninja",
+      "name": "vcpkg"
+    }
+  ],
+  "version": 2
+}
