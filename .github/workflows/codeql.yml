@@ -11,7 +11,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
       - name: Install tools
@@ -20,7 +20,7 @@ jobs:
           cmake -DWITH_EXAMPLES=ON -DWITH_TESTS=ON .
           make
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
         with:
           category: /language:${{matrix.language}}
     strategy:
