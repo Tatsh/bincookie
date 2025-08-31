@@ -18,9 +18,9 @@ jobs:
       - name: Run tests
         run: ctest --test-dir ${{github.workspace}}/build
       - name: Generate coverage information
-        run: geninfo '--exclude=*/test.c' -b ${{github.workspace}} -o coverage1.info ${{github.workspace}}/build/CMakeFiles/general_tests.dir
+        run: geninfo '--exclude=*/test.c' -b ${{github.workspace}} -o coverage1.lcov ${{github.workspace}}/build/CMakeFiles/general_tests.dir
       - name: Coveralls
-        run: coveralls -i bincookie.h
+        uses: coverallsapp/github-action@v2
 name: Tests
 'on':
   pull_request:

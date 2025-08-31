@@ -4,8 +4,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install dependencies (Yarn)
-        run: yarn
+      - name: 'Install dependencies (Yarn)'
+        run: |
+          yarn
+          pip install cmake-format pyyaml
       - name: Check spelling
         run: yarn check-spelling
       - name: Check formatting

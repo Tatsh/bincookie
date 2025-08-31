@@ -61,14 +61,16 @@ typedef unsigned __int8 bool;
  * \param c Pointer to a bincookie_cookie_t structure.
  */
 #define bincookie_path(c)                                                                          \
-    ((char *)c + c->path_offset) /**< @hideinitializer                                             \
+    ((char *)c +                                                                                   \
+     c->path_offset) /**< @hideinitializer                                             \
                                   */
 //! Get the name of a cookie.
 /*!
  * \param c Pointer to a bincookie_cookie_t structure.
  */
 #define bincookie_name(c)                                                                          \
-    ((char *)c + c->name_offset) /**< @hideinitializer                                             \
+    ((char *)c +                                                                                   \
+     c->name_offset) /**< @hideinitializer                                             \
                                   */
 //! Get the value of a cookie.
 /*!
