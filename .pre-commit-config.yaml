@@ -32,7 +32,7 @@ repos:
           - 'c'
           - 'c++'
     repo: 'https://github.com/pre-commit/mirrors-clang-format'
-    rev: 'v20.1.6'
+    rev: 'v21.1.1'
   - hooks:
       - id: 'check-github-actions'
       - id: 'check-github-workflows'
@@ -43,7 +43,7 @@ repos:
         id: 'check-jsonschema'
         name: 'validate package.json'
     repo: 'https://github.com/python-jsonschema/check-jsonschema'
-    rev: '0.33.3'
+    rev: '0.34.0'
   - hooks:
       - id: 'validate-cff'
     repo: 'https://github.com/citation-file-format/cffconvert'

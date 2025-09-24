@@ -8,9 +8,9 @@
       "CITATION.cff",
       "CMakeLists.txt",
       "README.md",
-      "man/bincookie.h.3",
       "package.json",
-      "vcpkg.json"
+      "vcpkg.json",
+      "man/bincookie.h.3"
     ],
     "version_provider": "npm",
     "version_scheme": "semver"
