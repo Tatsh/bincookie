@@ -114,7 +114,7 @@ a particular property, such as HTTP-only, use the `&` operator: `cookie->flags &
 
 ## Example use
 
-## Access all the cookie names in a file
+### Access all the cookie names in a file
 
 ```c
 bincookie_t *bc = bincookie_init_path("Cookies.binarycookies");
