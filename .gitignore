@@ -4,6 +4,7 @@
 *~
 .*.swp
 .*_cache/
+.DS_Store*
 .coverage
 .cspellcache
 .directory
@@ -12,9 +13,5 @@
 /CMakeUserPresets.json
 /build/
 /dist/
-/docs/_build/
-/man/_static/
 /vcpkg_installed/
-__pycache__/
-htmlcov/
 node_modules/
