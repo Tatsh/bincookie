@@ -33,5 +33,6 @@
   "files.trimTrailingWhitespace": true,
   "shellformat.flag": "i 2 -ci -sr",
   "sortJSON.excludedFiles": [],
-  "sortJSON.excludedPaths": []
+  "sortJSON.excludedPaths": [],
+  "yaml.format.printWidth": 100
 }
