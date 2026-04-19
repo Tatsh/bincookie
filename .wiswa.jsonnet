@@ -1,6 +1,7 @@
 local utils = import 'utils.libjsonnet';
 
 {
+  uses_user_defaults: true,
   project_type: 'c',
   project_name: 'bincookie',
   version: '0.1.7',
@@ -10,9 +11,6 @@ local utils = import 'utils.libjsonnet';
   want_main: false,
   want_codeql: false,
   want_tests: false,
-  copilot+: {
-    intro: "bincookie is a library to read Apple's binarycookies format.",
-  },
   // C++ only
   vcpkg+: {
     dependencies: [{

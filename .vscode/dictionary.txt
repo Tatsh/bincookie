@@ -1,6 +1,6 @@
+Ångström
 autosort
 badc
-binarycookie
 binarycookies
 bincookie
 bindir
@@ -10,7 +10,7 @@ buildsystems
 byteswap
 cmocka
 commitizen
-cookiesize
+cooldown
 coveragerc
 coverallsapp
 cppdbg
@@ -20,11 +20,9 @@ datarootdir
 dbuild
 dcmake
 docstrings
-domaain
-dorny
 dwith
 endforeach
-endofcookie
+esac
 esbenp
 fclose
 fopen
@@ -37,12 +35,12 @@ gcda
 gcov
 ggdb
 gmock
-gmtime
 gnucc
 gnucxx
 graphviz
 includedir
 iwyu
+jinja
 jsonnet
 jsonschema
 libcmocka
@@ -57,12 +55,13 @@ mocka
 msvc
 mypy
 namedebug
-nameoffset
+npmjs
 oneline
-pathoffset
 pipx
+pylock
 reflow
 regen
+ripgreprc
 satishb
 schemafile
 shellcheck
@@ -73,8 +72,6 @@ strequal
 tagfile
 tatsh
 udvare
-urloffset
-valueoffset
 vedantmgoyal
 vendored
 venv
@@ -84,6 +81,7 @@ werror
 wextra
 winget
 wiswa
+wiswa's
 wmissing
 wparentheses
 wpointer
@@ -95,4 +93,3 @@ wunknown
 wunreachable
 wunused
 yarnrc
-ångström
