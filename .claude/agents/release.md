@@ -39,9 +39,12 @@ with the changelog.
    1. **Stop work immediately and alert the user.** Do not attempt to work around the failure.
 
 1. **Commit the version bump.** Stage all changed files and commit with
-   `git commit -S -s -m 'bump: vOLD → vNEW'` (replace OLD/NEW with actual versions).
+   `git commit -S -s -m 'bump: vOLD → vNEW'` (replace
+   OLD/NEW with actual versions).
 
-1. **Create a signed tag.** Run `git tag -s vNEW -m 'vNEW'` (replace NEW with the new version).
+1. **Create a signed tag.** Run
+   `git tag -s vNEW -m 'vNEW'` (replace NEW with the
+   new version).
 
 1. **Push the commit and tag.** Run `git push && git push --tags`.
 
@@ -62,11 +65,11 @@ with the changelog.
      `line 2` reads as `- item with long sentence line 2`. Do **not** join across a paragraph
      break: leave any run of **two or more consecutive newlines** (`\n\n` or more) unchanged.
    - **Full Changelog line:** After the body, append **one blank line**, then exactly:
-     `**Full Changelog**: https://github.com/Tatsh/bincookie/compare/vPREV...vNEW` where `vNEW` is
-     this release's tag. Set `vPREV` to the tag of the **most recent other GitHub release** (for
-     example from `gh release list`, ordered by recency, skipping `vNEW`). If no earlier release
-     exists on GitHub, fall back to the previous version in `CHANGELOG.md` immediately below this
-     entry, or the git tag that precedes `vNEW`.
+     `**Full Changelog**: https://github.com/Tatsh/bincookie/compare/vPREV...vNEW` where
+     `vNEW` is this release's tag. Set `vPREV` to the tag of the
+     **most recent other GitHub release** (for example from `gh release list`, ordered by recency,
+     skipping `vNEW`). If no earlier release exists on GitHub, fall back to the previous version
+     in `CHANGELOG.md` immediately below this entry, or the git tag that precedes `vNEW`.
    - **Apply:** Write the combined Markdown to a file (for example under `.wiswa-ci/`) and run
      `gh release edit vNEW --notes-file <path>`.
 

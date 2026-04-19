@@ -11,18 +11,14 @@ local utils = import 'utils.libjsonnet';
   want_main: false,
   want_codeql: false,
   want_tests: false,
-  // C++ only
+  want_winget: false,
+  // C only
+  clang_format_args: '*.c *.h',
   vcpkg+: {
     dependencies: [{
       name: 'cmocka',
       platform: 'linux|mingw',
     }],
-  },
-  package_json+: {
-    scripts+: {
-      'check-formatting': "clang-format -n *.c *.h && prettier -c . && markdownlint-cli2 '**/*.md' '#node_modules'",
-      format: 'clang-format -i *.c *.h && yarn prettier -w .',
-    },
   },
   vscode+: {
     c_cpp+: {

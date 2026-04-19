@@ -4,7 +4,7 @@ jobs:
     steps:
       - uses: 'actions/checkout@v6.0.2'
       - name: 'Check formatting (clang-format)'
-        run: 'clang-format --dry-run src/*.cpp src/*.h'
+        run: 'clang-format --dry-run *.c *.h'
 name: 'clang-format'
 'on':
   pull_request:
