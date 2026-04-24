@@ -22,7 +22,6 @@ dcmake
 docstrings
 dwith
 endforeach
-esac
 esbenp
 fclose
 fopen
@@ -72,7 +71,6 @@ strequal
 tagfile
 tatsh
 udvare
-vedantmgoyal
 vendored
 venv
 wdeprecated

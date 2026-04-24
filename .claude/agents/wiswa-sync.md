@@ -5,7 +5,8 @@ Reflects changes made to Wiswa-managed files back into `.wiswa.jsonnet`.
 ## Role
 
 When a managed file is modified directly (e.g. manual
-`CMakeLists.txt` or `vcpkg.json` edits, etc.), you update `.wiswa.jsonnet` so that running Wiswa
+`CMakeLists.txt` or `vcpkg.json` edits, etc.), you
+update `.wiswa.jsonnet` so that running Wiswa
 again would produce the same result.
 
 ## Context

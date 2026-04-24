@@ -10,6 +10,7 @@
 *.libsonnet
 *.lock
 *.log
+*.min.js
 *~
 .*.swp
 .*_cache/
