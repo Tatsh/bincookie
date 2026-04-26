@@ -12,6 +12,18 @@ local utils = import 'utils.libjsonnet';
   want_codeql: false,
   want_tests: false,
   want_winget: false,
+  package_json+: {
+    prettier+: {
+      overrides+: [
+        {
+          files: ['*.ksy'],
+          options: {
+            parser: 'yaml',
+          },
+        },
+      ],
+    },
+  },
   // C only
   clang_format_args: '*.c *.h',
   vcpkg+: {

@@ -7,6 +7,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased]
 
+### Added
+
+- Kaitai Struct definition (`binarycookies.ksy`) describing the Apple binary cookies format, so the
+  format can be parsed in any language supported by Kaitai Struct.
+
 ## [0.1.2]
 
 ### Changed
