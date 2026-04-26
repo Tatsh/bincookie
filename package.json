@@ -44,9 +44,6 @@
     "prettier-plugin-sort-json": "^4.2.0",
     "prettier-plugin-toml": "^2.0.6"
   },
-  "engines": {
-    "node": ">=20.0"
-  },
   "files": ["LICENSE.txt", "README.md"],
   "homepage": "https://tatsh.github.io/bincookie/",
   "keywords": ["macos", "ios", "cookies", "binarycookies", "parser", "library"],
