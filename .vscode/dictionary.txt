@@ -42,6 +42,7 @@ iwyu
 jinja
 jsonnet
 jsonschema
+kaitai
 libcmocka
 libera
 libjsonnet
