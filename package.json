@@ -1,4 +1,9 @@
 {
+  "_wiswa": {
+    "commandLine": "wiswa",
+    "lastRun": "2026-05-02T20:57:05Z",
+    "version": "5a69ecf"
+  },
   "contributors": ["Andrew Udvare <audvare@gmail.com>"],
   "cspell": {
     "cache": {
@@ -38,7 +43,7 @@
   "devDependencies": {
     "@prettier/plugin-xml": "^3.4.2",
     "cspell": "^10.0.0",
-    "markdownlint-cli2": "^0.22.0",
+    "markdownlint-cli2": "^0.22.1",
     "prettier": "^3.8.3",
     "prettier-plugin-ini": "^1.3.0",
     "prettier-plugin-sort-json": "^4.2.0",
