@@ -5,7 +5,7 @@
 [![C](https://img.shields.io/badge/C-00599C?logo=c)](<https://en.wikipedia.org/wiki/C_(programming_language)>)
 [![GitHub tag (with filter)](https://img.shields.io/github/v/tag/Tatsh/bincookie)](https://github.com/Tatsh/bincookie/tags)
 [![License](https://img.shields.io/github/license/Tatsh/bincookie)](https://github.com/Tatsh/bincookie/blob/master/LICENSE.txt)
-[![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/bincookie/v0.1.7/master)](https://github.com/Tatsh/bincookie/compare/v0.1.7...master)
+[![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/bincookie/v0.1.8/master)](https://github.com/Tatsh/bincookie/compare/v0.1.8...master)
 [![Dependabot](https://img.shields.io/badge/Dependabot-enabled-blue?logo=dependabot)](https://github.com/dependabot)
 [![GitHub Pages](https://github.com/Tatsh/bincookie/actions/workflows/pages.yml/badge.svg)](https://tatsh.github.io/bincookie/)
 [![Stargazers](https://img.shields.io/github/stars/Tatsh/bincookie?logo=github&style=flat)](https://github.com/Tatsh/bincookie/stargazers)

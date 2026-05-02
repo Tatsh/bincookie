@@ -4,7 +4,7 @@ local utils = import 'utils.libjsonnet';
   uses_user_defaults: true,
   project_type: 'c',
   project_name: 'bincookie',
-  version: '0.1.7',
+  version: '0.1.8',
   description: 'Header-only binarycookies parser.',
   keywords: ['macos', 'ios', 'cookies', 'binarycookies', 'parser', 'library'],
   security_policy_supported_versions: { '0.1.x': ':white_check_mark:' },

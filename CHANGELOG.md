@@ -7,6 +7,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased]
 
+## [0.1.8] - 2026-05-02
+
 ### Added
 
 - Kaitai Struct definition (`binarycookies.ksy`) describing the Apple binary cookies format, so the
@@ -25,6 +27,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fixed argument order in `fread()`. This did not cause any bugs due to the arguments used but it was
   still incorrect usage.
 
-[unreleased]: https://github.com/Tatsh/bincookie/compare/v0.1.7...HEAD
+[unreleased]: https://github.com/Tatsh/bincookie/compare/v0.1.8...HEAD
+[0.1.8]: https://github.com/Tatsh/bincookie/compare/v0.1.7...v0.1.8
 [0.1.2]: https://github.com/Tatsh/bincookie/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/Tatsh/bincookie/compare/v0.1.0...v0.1.1
