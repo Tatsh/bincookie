@@ -6,6 +6,12 @@ local utils = import 'utils.libjsonnet';
   project_name: 'bincookie',
   version: '0.1.8',
   description: 'Header-only binarycookies parser.',
+  social+: {
+    custom_badges: [
+      '[![Tests](https://github.com/Tatsh/bincookie/actions/workflows/tests.yml/badge.svg)](https://github.com/Tatsh/bincookie/actions/workflows/tests.yml)',
+      '[![Coverage Status](https://coveralls.io/repos/github/Tatsh/bincookie/badge.svg?branch=master)](https://coveralls.io/github/Tatsh/bincookie?branch=master)',
+    ],
+  },
   keywords: ['macos', 'ios', 'cookies', 'binarycookies', 'parser', 'library'],
   security_policy_supported_versions: { '0.1.x': ':white_check_mark:' },
   want_main: false,
