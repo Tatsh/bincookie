@@ -57,7 +57,10 @@ mypy
 namedebug
 npmjs
 oneline
+pipefail
 pipx
+portfile
+preapproved
 pylock
 reflow
 regen
