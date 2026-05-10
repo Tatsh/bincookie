@@ -27,7 +27,8 @@ repos:
       - id: 'destroyed-symlinks'
       - id: 'detect-aws-credentials'
       - id: 'detect-private-key'
-      - id: 'end-of-file-fixer'
+      - exclude: "^vcpkg.*\\.json$"
+        id: 'end-of-file-fixer'
       - files: "^(\\.(docker|eslint|prettier)ignore|CODEOWNERS|\\.gitattributes)$"
         id: 'file-contents-sorter'
       - id: 'fix-byte-order-marker'

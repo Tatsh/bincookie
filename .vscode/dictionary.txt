@@ -1,5 +1,4 @@
 Ångström
-autosort
 badc
 binarycookies
 bincookie
