@@ -1,5 +1,8 @@
 {
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "[**/vcpkg*.json]": {
+    "files.insertFinalNewline": false
+  },
   "[c]": {
     "editor.defaultFormatter": "ms-vscode.cpptools",
     "editor.tabSize": 4
