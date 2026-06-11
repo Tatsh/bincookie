@@ -15,7 +15,7 @@ jobs:
       - name: Initialize CodeQL
         uses: 'github/codeql-action/init@8aad20d150bbac5944a9f9d289da16a4b0d87c1e'
         with:
-          languages: ${{ matrix.language }}
+          languages: c-cpp
       - name: Install tools
         run: sudo apt-get update -y && sudo apt-get install -y libcmocka-dev
       - run: |
@@ -24,11 +24,7 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: 'github/codeql-action/analyze@8aad20d150bbac5944a9f9d289da16a4b0d87c1e'
         with:
-          category: /language:${{matrix.language}}
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ['cpp', 'python']
+          category: /language:c-cpp
 name: CodeQL
 'on':
   pull_request:
