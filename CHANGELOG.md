@@ -18,7 +18,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `num_pages` is bounded before the byte-swap loop, and a new structural validation pass
   (`bincookie_validate_pages`) checks every page header, cookie offset table, cookie, and cookie
   string offset. Malformed files are now rejected (returning `NULL` and setting `errno` to `EIO`)
-  instead of corrupting the heap.
+  instead of corrupting the heap. Reported by @d00xy-hash.
 
 ## [0.1.8] - 2026-05-02
 
