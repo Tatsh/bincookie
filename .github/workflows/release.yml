@@ -1,0 +1,168 @@
+---
+jobs:
+  publish-release:
+    permissions:
+      actions: 'write'
+      contents: 'write'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout repository'
+        uses: 'actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10'
+        with:
+          persist-credentials: false
+      - env:
+          GH_TOKEN: '${{ github.token }}'
+          HEAD_SHA: '${{ github.event.workflow_run.head_sha }}'
+          REPO: '${{ github.repository }}'
+          TRIGGER_CONCLUSION: '${{ github.event.workflow_run.conclusion }}'
+        id: 'guard'
+        name: 'Check trigger conditions'
+        run: |
+          if [[ "$TRIGGER_CONCLUSION" != 'success' ]]; then
+            echo "Triggering workflow concluded with '${TRIGGER_CONCLUSION}', nothing to do."
+            echo 'proceed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          tag=''
+          while IFS=$'\t' read -r ref obj_type obj_sha; do
+            [[ -z "$ref" ]] && continue
+            if [[ "$obj_type" == 'commit' ]]; then
+              target_sha="$obj_sha"
+            else
+              target_sha=$(gh api "repos/${REPO}/git/tags/${obj_sha}" \
+                --jq '.object.sha' 2>/dev/null || echo '')
+            fi
+            if [[ "$target_sha" == "$HEAD_SHA" ]]; then
+              tag="${ref#refs/tags/}"
+              break
+            fi
+          done < <(gh api "repos/${REPO}/git/matching-refs/tags/v" \
+            --jq '.[] | [.ref, .object.type, .object.sha] | @tsv')
+          if [[ -z "$tag" ]]; then
+            echo "No v* tag points at ${HEAD_SHA}, nothing to do."
+            echo 'proceed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Found release tag ${tag} for SHA ${HEAD_SHA}."
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo 'proceed=true' >> "$GITHUB_OUTPUT"
+      - env:
+          GH_TOKEN: '${{ github.token }}'
+          HEAD_SHA: '${{ github.event.workflow_run.head_sha }}'
+          REPO: '${{ github.repository }}'
+          TAG: '${{ steps.guard.outputs.tag }}'
+        id: 'check'
+        if: "steps.guard.outputs.proceed == 'true'"
+        name: 'Check all required workflows succeeded'
+        run: |
+          tag="$TAG"
+          sha="$HEAD_SHA"
+          all_success=true
+          for workflow in CodeQL Prettier Spelling Tests clang-format markdownlint; do
+            run=$(gh run list --repo "$REPO" --workflow "$workflow" --commit "$sha" \
+              --json status,conclusion --jq '.[0]')
+            if [[ -z "$run" || "$run" == 'null' ]]; then
+              echo "Workflow '$workflow' did not run for this commit; treating as optional."
+              continue
+            fi
+            status=$(echo "$run" | jq -r '.status')
+            conclusion=$(echo "$run" | jq -r '.conclusion')
+            case "$conclusion" in
+              failure|cancelled|timed_out|startup_failure|action_required)
+                echo "::error::Workflow '$workflow' ${conclusion}."
+                exit 1
+                ;;
+              success|skipped|neutral)
+                ;;
+              *)
+                if [[ "$status" == 'completed' ]]; then
+                  echo "::error::Workflow '$workflow' completed with unexpected conclusion '${conclusion}'."
+                  exit 1
+                fi
+                echo "Workflow '$workflow' still pending (status=${status})."
+                all_success=false
+                ;;
+            esac
+          done
+          if [[ "$all_success" != 'true' ]]; then
+            echo 'Not all workflows have completed yet.'
+            exit 0
+          fi
+          echo "All required workflows succeeded for ${tag}."
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+      - env:
+          GH_TOKEN: '${{ github.token }}'
+          REPO: '${{ github.repository }}'
+          TAG: '${{ steps.guard.outputs.tag }}'
+        if: "steps.check.outputs.ready == 'true'"
+        name: 'Publish or create release'
+        run: |
+          if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+            echo "Release ${TAG} already exists; publishing it."
+            gh release edit "$TAG" --repo "$REPO" --draft=false
+          else
+            echo "No release exists for ${TAG}; creating one in draft form."
+            gh release create "$TAG" --repo "$REPO" --draft --verify-tag \
+              --title "$TAG" --generate-notes
+          fi
+      - env:
+          GH_TOKEN: '${{ github.token }}'
+          REPO: '${{ github.repository }}'
+          RUN_ID: '${{ github.run_id }}'
+        if: 'always()'
+        name: 'Delete prior non-publishing Release runs'
+        run: |
+          delete_run() {
+            local id="$1" reason="$2"
+            echo "Deleting prior Release run ${id} (${reason})."
+            gh run delete --repo "$REPO" "$id" || true
+          }
+          published_step_skipped() {
+            local id="$1"
+            local step_conclusion
+            step_conclusion=$(gh api "repos/${REPO}/actions/runs/${id}/jobs" \
+              --jq '[.jobs[].steps[] | select(.name == "Publish or create release")][0].conclusion' 2>/dev/null || echo '')
+            [[ "$step_conclusion" == 'skipped' ]]
+          }
+          gh run list --repo "$REPO" --workflow 'Release' \
+            --json databaseId,status,conclusion --limit 100 \
+            | jq -r --arg self "$RUN_ID" \
+                '.[] | select((.databaseId|tostring) != $self) | select(.status == "completed") | [.databaseId, .conclusion] | @tsv' \
+            | while IFS=$'\t' read -r id conclusion; do
+                [[ -z "$id" ]] && continue
+                case "$conclusion" in
+                  skipped|cancelled|neutral)
+                    delete_run "$id" "$conclusion"
+                    ;;
+                  success)
+                    if published_step_skipped "$id"; then
+                      delete_run "$id" 'success without publish'
+                    fi
+                    ;;
+                esac
+              done
+      - env:
+          GH_TOKEN: '${{ github.token }}'
+          REPO: '${{ github.repository }}'
+          RUN_ID: '${{ github.run_id }}'
+        if: "steps.guard.outputs.proceed != 'true' || steps.check.outputs.ready != 'true'"
+        name: 'Cancel this run so it can be cleaned up'
+        run: |
+          echo 'This run did not publish; cancelling so a later run can remove it.'
+          gh run cancel --repo "$REPO" "$RUN_ID" || true
+          sleep 30
+name: 'Release'
+'on':
+  workflow_run:
+    types:
+      - 'completed'
+    workflows:
+      - 'CodeQL'
+      - 'Prettier'
+      - 'Spelling'
+      - 'Tests'
+      - 'clang-format'
+      - 'markdownlint'
+permissions:
+  actions: 'write'
+  contents: 'write'
