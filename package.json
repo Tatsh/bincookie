@@ -1,8 +1,8 @@
 {
   "_wiswa": {
-    "commandLine": "wiswa",
-    "lastRun": "2026-05-11T19:25:53Z",
-    "version": "eb1f7cf"
+    "commandLine": "wiswa -d",
+    "lastRun": "2026-06-11T17:17:48Z",
+    "version": "253303c"
   },
   "contributors": ["Andrew Udvare <audvare@gmail.com>"],
   "cspell": {
@@ -74,7 +74,7 @@
     "showFound": true
   },
   "name": "bincookie",
-  "packageManager": "yarn@4.14.1",
+  "packageManager": "yarn@4.16.0",
   "prettier": {
     "endOfLine": "lf",
     "iniSpaceAroundEquals": true,

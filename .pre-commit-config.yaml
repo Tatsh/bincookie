@@ -54,6 +54,10 @@ repos:
     repo: 'https://github.com/python-jsonschema/check-jsonschema'
     rev: '0.37.2'
   - hooks:
+      - id: 'zizmor'
+    repo: 'https://github.com/zizmorcore/zizmor-pre-commit'
+    rev: 'v1.25.2'
+  - hooks:
       - id: 'validate-cff'
     repo: 'https://github.com/citation-file-format/cffconvert'
     rev: 'b6045d7'

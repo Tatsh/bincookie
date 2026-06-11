@@ -47,6 +47,7 @@ kaitai
 libcmocka
 libera
 libjsonnet
+libname
 libsonnet
 mainpage
 mdfile
@@ -54,11 +55,13 @@ mktemp
 mocka
 msvc
 mypy
+namedebug
 oneline
 pipefail
 pipx
 portfile
 preapproved
+pyinstaller
 pylock
 pyproject
 reflow
@@ -69,6 +72,7 @@ schemafile
 shellcheck
 shellformat
 snapcraft
+srcs
 strequal
 tagfile
 tatsh
@@ -80,6 +84,7 @@ venv
 wdeprecated
 wempty
 werror
+wextra
 winget
 wiswa
 wiswa's
@@ -95,3 +100,4 @@ wunknown
 wunreachable
 wunused
 yarnrc
+zizmor
