@@ -7,6 +7,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased]
 
+### Security
+
+- Fixed a heap buffer overflow (GHSA-22pc-xxw4-q849, CWE-787) in `bincookie_init_file()`. The
+  function previously trusted the file-controlled `num_pages`, page sizes, and cookie offsets
+  without bounds-checking them against the actual file length, so a crafted `.binarycookies` file
+  could trigger out-of-bounds reads and writes on the heap. The header size is now validated,
+  `num_pages` is bounded before the byte-swap loop, and a new structural validation pass
+  (`bincookie_validate_pages`) checks every page header, cookie offset table, cookie, and cookie
+  string offset. Malformed files are now rejected (returning `NULL` and setting `errno` to `EIO`)
+  instead of corrupting the heap.
+
 ## [0.1.8] - 2026-05-02
 
 ### Added

@@ -139,6 +139,51 @@ typedef struct {
     uint32_t page_sizes[];  /*!< Page sizes (same length as number of pages) */
 } bincookie_t;
 
+//! Validate that every page header, cookie offset table, and cookie referenced by a loaded buffer
+//! lies within its bounds.
+/*!
+ * The fixed header and the byte-swapped page size table must already have been validated by the
+ * caller. This routine checks the remaining file-controlled counts and offsets so that subsequent
+ * iteration cannot read or write outside the buffer that was read from disk.
+ *
+ \param bc Pointer to a fully read bincookie_t buffer.
+ \param num_bytes Size of the buffer in bytes.
+ \return `true` when the structure is internally consistent, otherwise `false`.
+ */
+static inline bool bincookie_validate_pages(const bincookie_t *bc, size_t num_bytes) {
+    size_t page_offset = sizeof(bincookie_t) + (size_t)bc->num_pages * sizeof(uint32_t);
+    for (uint32_t i = 0; i < bc->num_pages; i++) {
+        if (page_offset > num_bytes || num_bytes - page_offset < sizeof(bincookie_page_t)) {
+            return false;
+        }
+        const bincookie_page_t *page = (const bincookie_page_t *)((const char *)bc + page_offset);
+        size_t offsets_room = num_bytes - page_offset - sizeof(bincookie_page_t);
+        if (offsets_room / sizeof(uint32_t) < page->num_cookies) {
+            return false;
+        }
+        for (uint32_t j = 0; j < page->num_cookies; j++) {
+            uint32_t cookie_offset = page->cookie_offsets[j];
+            if (cookie_offset > num_bytes - page_offset ||
+                num_bytes - page_offset - cookie_offset < sizeof(bincookie_cookie_t)) {
+                return false;
+            }
+            const bincookie_cookie_t *cookie =
+                (const bincookie_cookie_t *)((const char *)page + cookie_offset);
+            size_t cookie_pos = page_offset + cookie_offset;
+            uint32_t string_offsets[] = {cookie->domain_offset,
+                                         cookie->name_offset,
+                                         cookie->path_offset,
+                                         cookie->value_offset};
+            for (size_t k = 0; k < sizeof(string_offsets) / sizeof(string_offsets[0]); k++) {
+                if (string_offsets[k] >= num_bytes - cookie_pos) {
+                    return false;
+                }
+            }
+        }
+        page_offset += bc->page_sizes[i];
+    }
+    return true;
+}
 //! Read a binarycookies file.
 /*!
  \param fin Opened file handle.
@@ -158,6 +203,12 @@ static inline bincookie_t *const bincookie_init_file(FILE *fin) {
     // Read entire file
     fseek(fin, 0, SEEK_END);
     size_t num_bytes = (size_t)ftell(fin);
+    // The fixed header, made up of the magic and num_pages, must be present before any
+    // file-derived field is dereferenced.
+    if (num_bytes < sizeof(bincookie_t)) {
+        errno = EIO;
+        goto done;
+    }
     cook = (bincookie_t *)malloc(num_bytes);
     // LCOV_EXCL_START
     if (cook == NULL) {
@@ -172,9 +223,25 @@ static inline bincookie_t *const bincookie_init_file(FILE *fin) {
         goto done;
     } // LCOV_EXCL_STOP
     cook->num_pages = __builtin_bswap32(cook->num_pages);
+    // num_pages comes straight from the file; reject any value whose page size table cannot fit
+    // within the bytes actually read from disk before the table is dereferenced.
+    if (cook->num_pages > (num_bytes - sizeof(bincookie_t)) / sizeof(uint32_t)) {
+        free(cook);
+        cook = NULL;
+        errno = EIO;
+        goto done;
+    }
     // Fix page size numbers
     for (uint32_t i = 0; i < cook->num_pages; i++) {
         *(cook->page_sizes + i) = __builtin_bswap32(*(cook->page_sizes + i));
+    }
+    // Every page, cookie offset table, and cookie offset is also file-controlled, so reject the
+    // file unless the whole structure stays within bounds.
+    if (!bincookie_validate_pages(cook, num_bytes)) {
+        free(cook);
+        cook = NULL;
+        errno = EIO;
+        goto done;
     }
 done:
     fseek(fin, last_pos, SEEK_SET);
