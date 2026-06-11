@@ -21,6 +21,7 @@ dcmake
 docstrings
 dwith
 endforeach
+errno
 esbenp
 fclose
 fopen
@@ -32,6 +33,7 @@ funcs
 gcda
 gcov
 ggdb
+ghsa
 gmock
 gnucc
 gnucxx
