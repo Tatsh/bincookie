@@ -43,8 +43,8 @@ FILE *__wrap_fopen(const char *restrict path, const char *restrict mode) {
     if (ends_with_ext_gcda(path)) {
         return __real_fopen(path, mode);
     }
-    check_expected(path);
-    check_expected(mode);
+    check_expected_ptr(path);
+    check_expected_ptr(mode);
     return mock_type(FILE *);
 }
 
@@ -53,10 +53,11 @@ int __wrap_fread(void *restrict ptr, size_t size, size_t nitems, FILE *restrict 
     if (is_gcda(stream)) {
         return __real_fread(ptr, size, nitems, stream);
     }
+    const uintptr_t stream_value = (uintptr_t)stream;
     memcpy(ptr, ((fake_file_t *)stream)->data, size);
-    check_expected(size);
-    check_expected(nitems);
-    check_expected(stream);
+    check_expected_uint(size);
+    check_expected_uint(nitems);
+    check_expected_uint(stream_value);
     return mock();
 }
 
@@ -65,9 +66,10 @@ int __wrap_fseek(FILE *stream, long offset, int whence) {
     if (is_gcda(stream)) {
         return __real_fseek(stream, offset, whence);
     }
-    check_expected(stream);
-    check_expected(offset);
-    check_expected(whence);
+    const uintptr_t stream_value = (uintptr_t)stream;
+    check_expected_uint(stream_value);
+    check_expected_int(offset);
+    check_expected_int(whence);
     return mock();
 }
 
@@ -76,7 +78,8 @@ long __wrap_ftell(FILE *stream) {
     if (is_gcda(stream)) {
         return __real_ftell(stream);
     }
-    check_expected(stream);
+    const uintptr_t stream_value = (uintptr_t)stream;
+    check_expected_uint(stream_value);
     return mock();
 }
 
@@ -86,7 +89,8 @@ void __wrap_rewind(FILE *stream) {
         __real_rewind(stream);
         return;
     }
-    check_expected(stream);
+    const uintptr_t stream_value = (uintptr_t)stream;
+    check_expected_uint(stream_value);
 }
 
 int __real_fclose(FILE *stream);
@@ -94,7 +98,8 @@ int __wrap_fclose(FILE *stream) {
     if (is_gcda(stream)) {
         return __real_fclose(stream);
     }
-    check_expected(stream);
+    const uintptr_t stream_value = (uintptr_t)stream;
+    check_expected_uint(stream_value);
     return mock();
 }
 
@@ -120,22 +125,22 @@ void test_bad_magic(void **state) {
     expect_string(__wrap_fopen, mode, "rb");
     will_return(__wrap_fopen, ff);
 
-    expect_value(__wrap_ftell, stream, ff);
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
     will_return(__wrap_ftell, 0);
 
-    expect_value(__wrap_rewind, stream, ff);
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
 
-    expect_value(__wrap_fread, size, 4);
-    expect_value(__wrap_fread, nitems, 1);
-    expect_value(__wrap_fread, stream, ff);
+    expect_uint_value(__wrap_fread, size, 4);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
     will_return(__wrap_fread, 4);
 
-    expect_value(__wrap_fclose, stream, ff);
+    expect_uint_value(__wrap_fclose, stream_value, (uintptr_t)ff);
     will_return(__wrap_fclose, 0);
 
-    expect_value(__wrap_fseek, stream, ff);
-    expect_value(__wrap_fseek, offset, 0);
-    expect_value(__wrap_fseek, whence, SEEK_SET);
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_SET);
     will_return(__wrap_fseek, 0);
 
     assert_null(bincookie_init_path("bad_magic.binarycookies"));
@@ -181,34 +186,34 @@ void test_good(void **state) {
     ff->pos = 0;
     ff->len = data_offset;
 
-    expect_value(__wrap_ftell, stream, ff);
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
     will_return(__wrap_ftell, 4);
 
-    expect_value(__wrap_rewind, stream, ff);
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
 
-    expect_value(__wrap_fread, size, 4);
-    expect_value(__wrap_fread, nitems, 1);
-    expect_value(__wrap_fread, stream, ff);
+    expect_uint_value(__wrap_fread, size, 4);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
     will_return(__wrap_fread, 1);
 
-    expect_value(__wrap_fseek, stream, ff);
-    expect_value(__wrap_fseek, offset, 0);
-    expect_value(__wrap_fseek, whence, SEEK_END);
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_END);
     will_return(__wrap_fseek, 0);
 
-    expect_value(__wrap_ftell, stream, ff);
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
     will_return(__wrap_ftell, ff->len);
 
-    expect_value(__wrap_rewind, stream, ff);
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
 
-    expect_value(__wrap_fread, size, ff->len);
-    expect_value(__wrap_fread, nitems, 1);
-    expect_value(__wrap_fread, stream, ff);
+    expect_uint_value(__wrap_fread, size, ff->len);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
     will_return(__wrap_fread, 1);
 
-    expect_value(__wrap_fseek, stream, ff);
-    expect_value(__wrap_fseek, offset, 4);
-    expect_value(__wrap_fseek, whence, SEEK_SET);
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 4);
+    expect_int_value(__wrap_fseek, whence, SEEK_SET);
     will_return(__wrap_fseek, 4);
 
     bincookie_t *ret = bincookie_init_file((FILE *)ff);
@@ -235,10 +240,325 @@ void test_good(void **state) {
     }
 }
 
+void test_truncated_header(void **state) {
+    (void)state;
+
+    fake_file_t *ff = (fake_file_t *)malloc(sizeof(fake_file_t));
+    memset(ff, 0, sizeof(fake_file_t));
+    memcpy(ff->path, "truncated.binarycookies", 24);
+    memcpy(ff->data, "cook", 4);
+    ff->len = 4;
+    ff->pos = 0;
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 0);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, 4);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_END);
+    will_return(__wrap_fseek, 0);
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 4);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_SET);
+    will_return(__wrap_fseek, 0);
+
+    errno = 0;
+    assert_null(bincookie_init_file((FILE *)ff));
+    assert_int_equal(errno, EIO);
+}
+
+void test_too_many_pages(void **state) {
+    (void)state;
+
+    unsigned int num_pages_swapped = __builtin_bswap32(0x40000000u);
+
+    fake_file_t *ff = (fake_file_t *)malloc(sizeof(fake_file_t));
+    memset(ff, 0, sizeof(fake_file_t));
+    memcpy(ff->path, "many_pages.binarycookies", 25);
+    memcpy(ff->data, "cook", 4);
+    memcpy(ff->data + 4, &num_pages_swapped, 4); // num_pages far larger than the file
+    ff->len = 12;
+    ff->pos = 0;
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 0);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, 4);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_END);
+    will_return(__wrap_fseek, 0);
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 12);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, 12);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_SET);
+    will_return(__wrap_fseek, 0);
+
+    errno = 0;
+    assert_null(bincookie_init_file((FILE *)ff));
+    assert_int_equal(errno, EIO);
+}
+
+void test_page_out_of_bounds(void **state) {
+    (void)state;
+
+    unsigned int one_swapped = __builtin_bswap32(1);
+
+    fake_file_t *ff = (fake_file_t *)malloc(sizeof(fake_file_t));
+    memset(ff, 0, sizeof(fake_file_t));
+    memcpy(ff->path, "page_oob.binarycookies", 23);
+    memcpy(ff->data, "cook", 4);
+    memcpy(ff->data + 4, &one_swapped, 4); // num_pages = 1, but no room for the page header
+    ff->len = 12;
+    ff->pos = 0;
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 0);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, 4);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_END);
+    will_return(__wrap_fseek, 0);
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 12);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, 12);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_SET);
+    will_return(__wrap_fseek, 0);
+
+    errno = 0;
+    assert_null(bincookie_init_file((FILE *)ff));
+    assert_int_equal(errno, EIO);
+}
+
+void test_cookie_out_of_bounds(void **state) {
+    (void)state;
+
+    unsigned int one_swapped = __builtin_bswap32(1);
+    unsigned int page_size_swapped = __builtin_bswap32(128);
+    unsigned int num_cookies = 1;
+    unsigned int bad_cookie_offset = 1000;
+
+    fake_file_t *ff = (fake_file_t *)malloc(sizeof(fake_file_t));
+    memset(ff, 0, sizeof(fake_file_t));
+    memcpy(ff->path, "cookie_oob.binarycookies", 25);
+    memcpy(ff->data, "cook", 4);
+    memcpy(ff->data + 4, &one_swapped, 4);        // num_pages = 1
+    memcpy(ff->data + 8, &page_size_swapped, 4);  // page_sizes[0]
+    memcpy(ff->data + 12, "test", 4);             // page->unk1
+    memcpy(ff->data + 16, &num_cookies, 4);       // page->num_cookies
+    memcpy(ff->data + 20, &bad_cookie_offset, 4); // cookie_offsets[0] points past the buffer
+    ff->len = 24;
+    ff->pos = 0;
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 0);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, 4);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_END);
+    will_return(__wrap_fseek, 0);
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 24);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, 24);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_SET);
+    will_return(__wrap_fseek, 0);
+
+    errno = 0;
+    assert_null(bincookie_init_file((FILE *)ff));
+    assert_int_equal(errno, EIO);
+}
+
+void test_cookie_string_out_of_bounds(void **state) {
+    (void)state;
+
+    unsigned int data_offset = 0;
+    unsigned int first_cookie_offset = sizeof(bincookie_page_t) + 4;
+    unsigned int one_swapped = __builtin_bswap32(1);
+    unsigned int page_size_swapped = __builtin_bswap32(128);
+
+    bincookie_page_t first_page;
+    memset(&first_page, 0, sizeof(bincookie_page_t));
+    first_page.num_cookies = 1;
+
+    bincookie_cookie_t first_cookie;
+    memset(&first_cookie, 0, sizeof(bincookie_cookie_t));
+    first_cookie.value_offset = 1000; // resolves past the end of the buffer
+
+    fake_file_t *ff = (fake_file_t *)malloc(sizeof(fake_file_t));
+    memset(ff, 0, sizeof(fake_file_t));
+    memcpy(ff->path, "string_oob.binarycookies", 25);
+    memcpy(ff->data, "cook", 4);
+    memcpy(ff->data + 4, &one_swapped, 4);       // num_pages
+    memcpy(ff->data + 8, &page_size_swapped, 4); // page_sizes[]
+    data_offset += sizeof(bincookie_t) + 4;
+    memcpy(ff->data + data_offset, &first_page, sizeof(bincookie_page_t));
+    data_offset += sizeof(bincookie_page_t);
+    memcpy(ff->data + data_offset, &first_cookie_offset, sizeof(uint32_t));
+    data_offset += sizeof(uint32_t);
+    memcpy(ff->data + data_offset, &first_cookie, sizeof(bincookie_cookie_t));
+    data_offset += sizeof(bincookie_cookie_t);
+    ff->pos = 0;
+    ff->len = data_offset;
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 0);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, 4);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_END);
+    will_return(__wrap_fseek, 0);
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, ff->len);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, ff->len);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_SET);
+    will_return(__wrap_fseek, 0);
+
+    errno = 0;
+    assert_null(bincookie_init_file((FILE *)ff));
+    assert_int_equal(errno, EIO);
+}
+
+void test_cookie_table_out_of_bounds(void **state) {
+    (void)state;
+
+    unsigned int one_swapped = __builtin_bswap32(1);
+    unsigned int page_size_swapped = __builtin_bswap32(128);
+    unsigned int num_cookies = 1;
+
+    fake_file_t *ff = (fake_file_t *)malloc(sizeof(fake_file_t));
+    memset(ff, 0, sizeof(fake_file_t));
+    memcpy(ff->path, "cookie_table_oob.binarycookies", 31);
+    memcpy(ff->data, "cook", 4);
+    memcpy(ff->data + 4, &one_swapped, 4);       // num_pages = 1
+    memcpy(ff->data + 8, &page_size_swapped, 4); // page_sizes[0]
+    memcpy(ff->data + 12, "test", 4);            // page->unk1
+    memcpy(ff->data + 16, &num_cookies, 4);      // page->num_cookies, but no room for the table
+    ff->len = 20;
+    ff->pos = 0;
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 0);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, 4);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_END);
+    will_return(__wrap_fseek, 0);
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 20);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, 20);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_SET);
+    will_return(__wrap_fseek, 0);
+
+    errno = 0;
+    assert_null(bincookie_init_file((FILE *)ff));
+    assert_int_equal(errno, EIO);
+}
+
 const struct CMUnitTest bincookie_tests[] = {
     cmocka_unit_test(test_bad_magic),
     cmocka_unit_test(test_good),
     cmocka_unit_test(test_not_exist),
+    cmocka_unit_test(test_truncated_header),
+    cmocka_unit_test(test_too_many_pages),
+    cmocka_unit_test(test_page_out_of_bounds),
+    cmocka_unit_test(test_cookie_out_of_bounds),
+    cmocka_unit_test(test_cookie_table_out_of_bounds),
+    cmocka_unit_test(test_cookie_string_out_of_bounds),
 };
 
 int main(void) {
