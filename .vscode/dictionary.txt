@@ -22,6 +22,7 @@ docstrings
 dwith
 endforeach
 errno
+esac
 esbenp
 fclose
 fopen
@@ -44,10 +45,8 @@ jinja
 jsonnet
 jsonschema
 kaitai
-libcmocka
 libera
 libjsonnet
-libname
 libsonnet
 mainpage
 mdfile
@@ -55,7 +54,6 @@ mktemp
 mocka
 msvc
 mypy
-namedebug
 oneline
 pipefail
 pipx
@@ -72,10 +70,10 @@ schemafile
 shellcheck
 shellformat
 snapcraft
-srcs
 strequal
 tagfile
 tatsh
+tostring
 udvare
 undraft
 undrafted
@@ -84,7 +82,6 @@ venv
 wdeprecated
 wempty
 werror
-wextra
 winget
 wiswa
 wiswa's
