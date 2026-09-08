@@ -19,7 +19,7 @@ jobs:
         name: Configure
         run: cmake -G Ninja -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake -DWITH_EXAMPLES=ON -DWITH_TESTS=ON -B ${{github.workspace}}/build
       - name: Initialize CodeQL
-        uses: 'github/codeql-action/init@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28'
+        uses: 'github/codeql-action/init@cdf488f595d80d6e07e03d4674febd5ab45fa938'
         with:
           build-mode: ${{ matrix.build-mode }}
           languages: ${{ matrix.language }}
@@ -27,7 +27,7 @@ jobs:
         name: Build
         run: cmake --build ${{github.workspace}}/build
       - name: Perform CodeQL Analysis
-        uses: 'github/codeql-action/analyze@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28'
+        uses: 'github/codeql-action/analyze@cdf488f595d80d6e07e03d4674febd5ab45fa938'
         with:
           category: '/language:${{ matrix.language }}'
     strategy:
