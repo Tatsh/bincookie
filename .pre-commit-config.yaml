@@ -25,11 +25,13 @@ repos:
       - id: 'check-toml'
       - id: 'debug-statements'
       - id: 'destroyed-symlinks'
-      - id: 'detect-aws-credentials'
+      - args:
+          - '--allow-missing-credentials'
+        id: 'detect-aws-credentials'
       - id: 'detect-private-key'
       - exclude: "^vcpkg.*\\.json$"
         id: 'end-of-file-fixer'
-      - files: "^(\\.(docker|eslint|prettier)ignore|CODEOWNERS|\\.gitattributes)$"
+      - files: "^(\\.(docker|eslint|prettier)ignore|CODEOWNERS|\\.gitattributes|\\.vscode/dictionary\\.txt)$"
         id: 'file-contents-sorter'
       - id: 'fix-byte-order-marker'
       - id: 'mixed-line-ending'
@@ -41,7 +43,7 @@ repos:
           - 'c'
           - 'c++'
     repo: 'https://github.com/pre-commit/mirrors-clang-format'
-    rev: 'v23.1.1'
+    rev: 'v23.1.2'
   - hooks:
       - id: 'check-github-actions'
       - id: 'check-github-workflows'

@@ -1,4 +1,3 @@
-Ångström
 badc
 binarycookies
 bincookie
@@ -9,7 +8,6 @@ buildsystems
 byteswap
 cmocka
 commitizen
-cooldown
 coveragerc
 coverallsapp
 cppdbg
@@ -21,7 +19,6 @@ dcmake
 docstrings
 dwith
 endforeach
-errno
 esac
 esbenp
 fclose
@@ -39,6 +36,7 @@ gmock
 gnucc
 gnucxx
 graphviz
+handoff
 includedir
 iwyu
 jinja
@@ -47,6 +45,7 @@ jsonschema
 kaitai
 libera
 libjsonnet
+libname
 libsonnet
 mainpage
 mdfile
@@ -54,10 +53,11 @@ mktemp
 mocka
 msvc
 mypy
+namedebug
+noone
+numpydoc
 oneline
-pipefail
 pipx
-portfile
 preapproved
 pyinstaller
 pylock
@@ -70,6 +70,8 @@ schemafile
 shellcheck
 shellformat
 snapcraft
+srcs
+statusline
 strequal
 tagfile
 tatsh
@@ -82,11 +84,11 @@ venv
 wdeprecated
 wempty
 werror
+wextra
 winget
 wiswa
 wiswa's
 wmissing
-worktree
 wparentheses
 wpointer
 wshadow
@@ -98,3 +100,4 @@ wunreachable
 wunused
 yarnrc
 zizmor
+Ångström
