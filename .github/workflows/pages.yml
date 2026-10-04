@@ -7,6 +7,11 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    name: 'Deploy'
+    permissions:
+      contents: read
+      id-token: write
+      pages: write
     runs-on: ubuntu-latest
     steps:
       - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
@@ -21,9 +26,9 @@ jobs:
           sudo apt-get install -y doxygen graphviz ninja-build
       - name: Configure
         run: >-
-          cmake -G Ninja -DWITH_DOCS=ON -DCMAKE_BUILD_TYPE=Release -B ${{github.workspace}}/build
+          cmake -G Ninja -DWITH_DOCS=ON -DCMAKE_BUILD_TYPE=Release -B "${GITHUB_WORKSPACE}/build"
       - name: Build documentation
-        run: cmake --build ${{github.workspace}}/build --verbose --config Release --target docs
+        run: cmake --build "${GITHUB_WORKSPACE}/build" --verbose --config Release --target docs
       - name: Upload artifact
         uses: 'actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9'
         with:
@@ -35,7 +40,4 @@ name: GitHub Pages
 'on':
   push:
     branches: [master]
-permissions:
-  contents: read
-  id-token: write
-  pages: write
+permissions: {}

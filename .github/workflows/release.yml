@@ -1,6 +1,11 @@
 ---
+concurrency:
+  cancel-in-progress: false
+  group: '${{ github.workflow }}-${{ github.event.workflow_run.head_sha }}'
+  queue: 'max'
 jobs:
   publish-release:
+    name: 'Publish Release'
     permissions:
       actions: 'write'
       contents: 'write'
@@ -163,6 +168,4 @@ name: 'Release'
       - 'Tests'
       - 'clang-format'
       - 'markdownlint'
-permissions:
-  actions: 'write'
-  contents: 'write'
+permissions: {}
