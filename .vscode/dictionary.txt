@@ -45,7 +45,6 @@ jsonschema
 kaitai
 libera
 libjsonnet
-libname
 libsonnet
 mainpage
 mdfile
@@ -53,7 +52,6 @@ mktemp
 mocka
 msvc
 mypy
-namedebug
 noone
 numpydoc
 oneline
@@ -66,11 +64,11 @@ reflow
 regen
 ripgreprc
 satishb
+sbclaude
 schemafile
 shellcheck
 shellformat
 snapcraft
-srcs
 statusline
 strequal
 tagfile
@@ -84,7 +82,6 @@ venv
 wdeprecated
 wempty
 werror
-wextra
 winget
 wiswa
 wiswa's
