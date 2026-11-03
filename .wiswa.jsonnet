@@ -78,6 +78,41 @@ local utils = import 'utils.libjsonnet';
 + {
   want_scan_build: true,
   github+: { workflows+: {
-    scan_build+: import '.wiswa-scan-build.jsonnet',
+    scan_build+: {
+      checkout_options: { 'fetch-depth': 0 },
+      configure_command: 'cmake -S . -B build-scan -DCMAKE_BUILD_TYPE=Debug -DWITH_TESTS=ON -DWITH_EXAMPLES=ON',
+      documentation_steps: [
+        {
+          name: 'Install dependencies',
+          run: |||
+            sudo apt-get update
+            sudo apt-get install -y doxygen graphviz ninja-build
+          |||,
+        },
+        {
+          name: 'Configure',
+          run: 'cmake -G Ninja -DWITH_DOCS=ON -DCMAKE_BUILD_TYPE=Release -B "${GITHUB_WORKSPACE}/build"',
+        },
+        {
+          name: 'Build documentation',
+          run: 'cmake --build "${GITHUB_WORKSPACE}/build" --verbose --config Release --target docs',
+        },
+      ],
+      env: {},
+      setup_steps: [
+        {
+          name: 'Install build dependencies',
+          run: |||
+            sudo apt-get update
+            sudo apt-get install -y libcmocka-dev
+          |||,
+        },
+        {
+          name: 'Install current CMake',
+          run: 'pipx install cmake',
+        },
+      ],
+      workflow_file: 'pages.yml',
+    },
   } },
 }
