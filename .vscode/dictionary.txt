@@ -60,6 +60,7 @@ noone
 numpydoc
 oneline
 pathlib
+pipefail
 pipx
 preapproved
 pyinstaller
