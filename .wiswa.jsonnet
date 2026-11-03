@@ -75,3 +75,9 @@ local utils = import 'utils.libjsonnet';
     },
   },
 }
++ {
+  want_scan_build: true,
+  github+: { workflows+: {
+    scan_build+: import '.wiswa-scan-build.jsonnet',
+  } },
+}
