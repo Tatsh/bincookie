@@ -9,6 +9,7 @@ buildsystems
 byteswap
 cmocka
 commitizen
+copytree
 coveragerc
 coverallsapp
 cppdbg
@@ -39,7 +40,6 @@ gnucxx
 graphviz
 handoff
 includedir
-iterdir
 iwyu
 jinja
 jsonnet
@@ -69,11 +69,13 @@ pyproject
 reflow
 regen
 ripgreprc
+rmtree
 satishb
 sbclaude
 schemafile
 shellcheck
 shellformat
+shutil
 snapcraft
 statusline
 strequal
