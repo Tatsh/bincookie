@@ -66,10 +66,12 @@ preapproved
 pyinstaller
 pylock
 pyproject
+rdparty
 reflow
 regen
 ripgreprc
 rmtree
+sarif
 satishb
 sbclaude
 schemafile

@@ -116,3 +116,4 @@ local utils = import 'utils.libjsonnet';
     },
   } },
 }
++ { static_analysis_paths: ['bincookie.h', 'test.c', 'examples'] }
