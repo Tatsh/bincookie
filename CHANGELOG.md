@@ -7,6 +7,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased]
 
+### Security
+
+- Fixed a heap out-of-bounds read (GHSA-74fp-h89q-h6fr, CWE-125) when a crafted `.binarycookies` file
+  placed a cookie string at the end of the file without a NUL terminator. `bincookie_init_file()` now
+  allocates one extra zeroed byte after the file contents, and it returns `NULL` with `errno` set to
+  `EIO` when `ftell()` fails. Reported by @octane0x.
+
 ## [0.1.9] - 2026-06-11
 
 ### Security

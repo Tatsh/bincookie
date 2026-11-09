@@ -549,6 +549,112 @@ void test_cookie_table_out_of_bounds(void **state) {
     assert_int_equal(errno, EIO);
 }
 
+void expect_successful_read(fake_file_t *ff) {
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 0);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, 4);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_END);
+    will_return(__wrap_fseek, 0);
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, ff->len);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, ff->len);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_SET);
+    will_return(__wrap_fseek, 0);
+}
+
+void test_unterminated_cookie_string(void **state) {
+    (void)state;
+
+    // The domain string is the final byte of the file and has no terminator.
+    static const unsigned char file[] = {
+        'c',  'o',  'o',  'k',  0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00,
+        0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x00,
+        0x55, 0x00, 0x54, 0x74, 0x01, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x38, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x88, 0x00, 0x00, 0x00, 'c',  'o',  'o',  'k',  0x00, 0x00, 0x00, 0x08, 0x08, 0xff,
+        0x08, 0xff, 'o',  'o',  'k',  0x00, 0x00, 0x00, 0xff, 0x08, 0xff};
+
+    fake_file_t *ff = (fake_file_t *)malloc(sizeof(fake_file_t));
+    memset(ff, 0, sizeof(fake_file_t));
+    memcpy(ff->path, "unterminated.binarycookies", 27);
+    memcpy(ff->data, file, sizeof(file));
+    ff->len = sizeof(file);
+
+    expect_successful_read(ff);
+
+    bincookie_t *ret = bincookie_init_file((FILE *)ff);
+    assert_non_null(ret);
+
+    bincookie_iter_state_t iter_state;
+    unsigned int cookie_index = 0;
+    bincookie_iter_state_init(iter_state);
+    bincookie_page_t *page = bincookie_iter_pages(ret, &iter_state);
+    assert_non_null(page);
+    bincookie_cookie_t *cookie = bincookie_iter_cookies(page, &cookie_index);
+    assert_non_null(cookie);
+    assert_int_equal(1, strlen(bincookie_domain(cookie)));
+
+    free(ret);
+    free(ff);
+}
+
+void test_ftell_failure(void **state) {
+    (void)state;
+
+    fake_file_t *ff = (fake_file_t *)malloc(sizeof(fake_file_t));
+    memset(ff, 0, sizeof(fake_file_t));
+    memcpy(ff->path, "ftell_failure.binarycookies", 28);
+    memcpy(ff->data, "cook", 4);
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, 0);
+
+    expect_uint_value(__wrap_rewind, stream_value, (uintptr_t)ff);
+
+    expect_uint_value(__wrap_fread, size, 4);
+    expect_uint_value(__wrap_fread, nitems, 1);
+    expect_uint_value(__wrap_fread, stream_value, (uintptr_t)ff);
+    will_return(__wrap_fread, 1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_END);
+    will_return(__wrap_fseek, 0);
+
+    expect_uint_value(__wrap_ftell, stream_value, (uintptr_t)ff);
+    will_return(__wrap_ftell, -1);
+
+    expect_uint_value(__wrap_fseek, stream_value, (uintptr_t)ff);
+    expect_int_value(__wrap_fseek, offset, 0);
+    expect_int_value(__wrap_fseek, whence, SEEK_SET);
+    will_return(__wrap_fseek, 0);
+
+    errno = 0;
+    assert_null(bincookie_init_file((FILE *)ff));
+    assert_int_equal(errno, EIO);
+
+    free(ff);
+}
+
 const struct CMUnitTest bincookie_tests[] = {
     cmocka_unit_test(test_bad_magic),
     cmocka_unit_test(test_good),
@@ -559,6 +665,8 @@ const struct CMUnitTest bincookie_tests[] = {
     cmocka_unit_test(test_cookie_out_of_bounds),
     cmocka_unit_test(test_cookie_table_out_of_bounds),
     cmocka_unit_test(test_cookie_string_out_of_bounds),
+    cmocka_unit_test(test_unterminated_cookie_string),
+    cmocka_unit_test(test_ftell_failure),
 };
 
 int main(void) {

@@ -144,7 +144,9 @@ typedef struct {
 /*!
  * The fixed header and the byte-swapped page size table must already have been validated by the
  * caller. This routine checks the remaining file-controlled counts and offsets so that subsequent
- * iteration cannot read or write outside the buffer that was read from disk.
+ * iteration cannot read or write outside the buffer that was read from disk. String contents are
+ * not checked, and the caller must place a NUL byte directly after the first `num_bytes` bytes to
+ * terminate a cookie string that runs to the end of the buffer.
  *
  \param bc Pointer to a fully read bincookie_t buffer.
  \param num_bytes Size of the buffer in bytes.
@@ -202,19 +204,22 @@ static inline bincookie_t *const bincookie_init_file(FILE *fin) {
     }
     // Read entire file
     fseek(fin, 0, SEEK_END);
-    size_t num_bytes = (size_t)ftell(fin);
+    const long end_pos = ftell(fin);
     // The fixed header, made up of the magic and num_pages, must be present before any
-    // file-derived field is dereferenced.
-    if (num_bytes < sizeof(bincookie_t)) {
+    // file-derived field is dereferenced. The check also rejects the -1 returned by a failed
+    // ftell(). As a size_t, -1 wraps the allocation size below to zero.
+    if (end_pos < (long)sizeof(bincookie_t)) {
         errno = EIO;
         goto done;
     }
-    cook = (bincookie_t *)malloc(num_bytes);
+    size_t num_bytes = (size_t)end_pos;
+    // The extra zeroed byte terminates a cookie string that runs to the end of the file.
+    cook = (bincookie_t *)malloc(num_bytes + 1);
     // LCOV_EXCL_START
     if (cook == NULL) {
         goto done;
     } // LCOV_EXCL_STOP
-    memset(cook, 0, num_bytes);
+    memset(cook, 0, num_bytes + 1);
     rewind(fin);
     // LCOV_EXCL_START
     if (fread(cook, num_bytes, 1, fin) != 1) {
