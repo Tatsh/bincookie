@@ -14,6 +14,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   allocates one extra zeroed byte after the file contents, and it returns `NULL` with `errno` set to
   `EIO` when `ftell()` fails. Reported by @octane0x.
 
+### Fixed
+
+- Fixed undefined behaviour from misaligned access to pages and cookies at arbitrary file offsets.
+  `bincookie_cookie_t`, `bincookie_page_t`, and `bincookie_t` are now packed, with no change to their
+  layout. Reported by @octane0x.
+
 ## [0.1.9] - 2026-06-11
 
 ### Security

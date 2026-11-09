@@ -106,6 +106,9 @@ typedef struct {
     uint32_t page_index;  /*!< Current page. */
 } bincookie_iter_state_t;
 
+// Pages and cookies are found at file-controlled offsets with no alignment guarantee. Packing the
+// on-disk structures lowers their alignment to 1 without changing their layout.
+#pragma pack(push, 1)
 //! Cookie data structure.
 typedef struct {
     uint32_t size; /*!< Size of the cookie data. */
@@ -138,6 +141,7 @@ typedef struct {
     uint32_t num_pages;     /*!< Number of pages in this file */
     uint32_t page_sizes[];  /*!< Page sizes (same length as number of pages) */
 } bincookie_t;
+#pragma pack(pop)
 
 //! Validate that every page header, cookie offset table, and cookie referenced by a loaded buffer
 //! lies within its bounds.

@@ -10,6 +10,12 @@
 #include "bincookie.h"
 #include <cmocka.h>
 
+_Static_assert(_Alignof(bincookie_cookie_t) == 1, "cookies occur at any file offset");
+_Static_assert(_Alignof(bincookie_page_t) == 1, "pages occur at any file offset");
+_Static_assert(sizeof(bincookie_cookie_t) == 56, "cookie layout must match the file format");
+_Static_assert(sizeof(bincookie_page_t) == 8, "page layout must match the file format");
+_Static_assert(sizeof(bincookie_t) == 8, "file header layout must match the file format");
+
 typedef struct {
     char path[PATH_MAX];
     char data[2048];
@@ -655,6 +661,70 @@ void test_ftell_failure(void **state) {
     free(ff);
 }
 
+void test_misaligned_page_and_cookie(void **state) {
+    (void)state;
+
+    static const char strings[] = ".a\0n\0/\0v";
+    unsigned int two_swapped = __builtin_bswap32(2);
+    unsigned int first_page_size_swapped = __builtin_bswap32(9);
+    unsigned int second_page_size_swapped = __builtin_bswap32(78);
+    unsigned int num_cookies = 1;
+    unsigned int cookie_offset = 13;
+
+    bincookie_cookie_t cookie_in;
+    memset(&cookie_in, 0, sizeof(bincookie_cookie_t));
+    cookie_in.flags = secure;
+    cookie_in.domain_offset = sizeof(bincookie_cookie_t);
+    cookie_in.name_offset = sizeof(bincookie_cookie_t) + 3;
+    cookie_in.path_offset = sizeof(bincookie_cookie_t) + 5;
+    cookie_in.value_offset = sizeof(bincookie_cookie_t) + 7;
+    cookie_in.expiry_date_epoch = 1.5;
+    cookie_in.create_date_epoch = 2.5;
+
+    fake_file_t *ff = (fake_file_t *)malloc(sizeof(fake_file_t));
+    memset(ff, 0, sizeof(fake_file_t));
+    memcpy(ff->path, "misaligned.binarycookies", 25);
+    memcpy(ff->data, "cook", 4);
+    memcpy(ff->data + 4, &two_swapped, 4);               // num_pages
+    memcpy(ff->data + 8, &first_page_size_swapped, 4);   // page_sizes[0], an odd size
+    memcpy(ff->data + 12, &second_page_size_swapped, 4); // page_sizes[1]
+    memcpy(ff->data + 29, &num_cookies, 4);              // second page, at odd offset 25
+    memcpy(ff->data + 33, &cookie_offset, 4);            // cookie_offsets[0]
+    memcpy(ff->data + 38, &cookie_in, sizeof(bincookie_cookie_t));
+    memcpy(ff->data + 38 + sizeof(bincookie_cookie_t), strings, sizeof(strings));
+    ff->len = 38 + sizeof(bincookie_cookie_t) + sizeof(strings);
+
+    expect_successful_read(ff);
+
+    bincookie_t *ret = bincookie_init_file((FILE *)ff);
+    assert_non_null(ret);
+
+    bincookie_iter_state_t iter_state;
+    unsigned int cookie_index = 0;
+    bincookie_iter_state_init(iter_state);
+    bincookie_page_t *page = bincookie_iter_pages(ret, &iter_state);
+    assert_non_null(page);
+    assert_int_equal(0, page->num_cookies);
+    page = bincookie_iter_pages(ret, &iter_state);
+    assert_non_null(page);
+    assert_int_equal(25, (char *)page - (char *)ret);
+    assert_int_equal(1, page->num_cookies);
+
+    bincookie_cookie_t *cookie = bincookie_iter_cookies(page, &cookie_index);
+    assert_non_null(cookie);
+    assert_true(bincookie_is_secure(cookie));
+    assert_true(bincookie_domain_access_full(cookie));
+    assert_string_equal(".a", bincookie_domain(cookie));
+    assert_string_equal("n", bincookie_name(cookie));
+    assert_string_equal("/", bincookie_path(cookie));
+    assert_string_equal("v", bincookie_value(cookie));
+    assert_true(bincookie_expiration_time(cookie) == 1.5 + APPLE_EPOCH_OFFSET);
+    assert_true(bincookie_creation_time(cookie) == 2.5 + APPLE_EPOCH_OFFSET);
+
+    free(ret);
+    free(ff);
+}
+
 const struct CMUnitTest bincookie_tests[] = {
     cmocka_unit_test(test_bad_magic),
     cmocka_unit_test(test_good),
@@ -667,6 +737,7 @@ const struct CMUnitTest bincookie_tests[] = {
     cmocka_unit_test(test_cookie_string_out_of_bounds),
     cmocka_unit_test(test_unterminated_cookie_string),
     cmocka_unit_test(test_ftell_failure),
+    cmocka_unit_test(test_misaligned_page_and_cookie),
 };
 
 int main(void) {
