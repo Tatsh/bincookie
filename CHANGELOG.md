@@ -7,18 +7,20 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased]
 
+## [0.1.10] - 2026-11-10
+
 ### Security
 
-- Fixed a heap out-of-bounds read (GHSA-74fp-h89q-h6fr, CWE-125) when a crafted `.binarycookies` file
-  placed a cookie string at the end of the file without a NUL terminator. `bincookie_init_file()` now
-  allocates one extra zeroed byte after the file contents, and it returns `NULL` with `errno` set to
-  `EIO` when `ftell()` fails. Reported by @octane0x.
+- Fixed a heap out-of-bounds read (GHSA-74fp-h89q-h6fr, CWE-125) when a crafted `.binarycookies`
+  file placed a cookie string at the end of the file without a NUL terminator.
+  `bincookie_init_file()` now allocates one extra zeroed byte after the file contents, and it
+  returns `NULL` with `errno` set to `EIO` when `ftell()` fails. Reported by @octane0x.
 
 ### Fixed
 
 - Fixed undefined behaviour from misaligned access to pages and cookies at arbitrary file offsets.
-  `bincookie_cookie_t`, `bincookie_page_t`, and `bincookie_t` are now packed, with no change to their
-  layout. Reported by @octane0x.
+  `bincookie_cookie_t`, `bincookie_page_t`, and `bincookie_t` are now packed, with no change to
+  their layout. Reported by @octane0x.
 
 ## [0.1.9] - 2026-06-11
 
@@ -50,10 +52,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Fixed argument order in `fread()`. This did not cause any bugs due to the arguments used but it was
-  still incorrect usage.
+- Fixed argument order in `fread()`. This did not cause any bugs due to the arguments used but it
+  was still incorrect usage.
 
-[unreleased]: https://github.com/Tatsh/bincookie/compare/v0.1.9...HEAD
+[unreleased]: https://github.com/Tatsh/bincookie/compare/v0.1.10...HEAD
+[0.1.10]: https://github.com/Tatsh/bincookie/compare/v0.1.9...v0.1.10
 [0.1.9]: https://github.com/Tatsh/bincookie/compare/v0.1.8...v0.1.9
 [0.1.8]: https://github.com/Tatsh/bincookie/compare/v0.1.7...v0.1.8
 [0.1.2]: https://github.com/Tatsh/bincookie/compare/v0.1.1...v0.1.2

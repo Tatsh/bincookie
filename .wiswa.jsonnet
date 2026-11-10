@@ -4,7 +4,7 @@ local utils = import 'utils.libjsonnet';
   uses_user_defaults: true,
   project_type: 'c',
   project_name: 'bincookie',
-  version: '0.1.9',
+  version: '0.1.10',
   description: 'Header-only binarycookies parser.',
   custom_project_badges: [
     {
