@@ -7,6 +7,7 @@
 [![License](https://img.shields.io/github/license/Tatsh/bincookie)](https://github.com/Tatsh/bincookie/blob/master/LICENSE.txt)
 [![GitHub commits since latest release (by SemVer including pre-releases)](https://img.shields.io/github/commits-since/Tatsh/bincookie/v0.1.10/master)](https://github.com/Tatsh/bincookie/compare/v0.1.10...master)
 [![Dependabot](https://img.shields.io/badge/Dependabot-enabled-blue?logo=dependabot)](https://github.com/dependabot)
+[![GitHub Pages](https://github.com/Tatsh/bincookie/actions/workflows/pages.yml/badge.svg)](https://tatsh.github.io/bincookie/)
 [![Stargazers](https://img.shields.io/github/stars/Tatsh/bincookie?logo=github&style=flat)](https://github.com/Tatsh/bincookie/stargazers)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Tatsh/bincookie/master.svg)](https://results.pre-commit.ci/latest/github/Tatsh/bincookie/master)
 [![CMake](https://img.shields.io/badge/CMake-6E6E6E?logo=cmake)](https://cmake.org/)

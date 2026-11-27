@@ -1,4 +1,3 @@
-analyzer
 badc
 binarycookies
 bincookie
@@ -9,7 +8,6 @@ buildsystems
 byteswap
 cmocka
 commitizen
-copytree
 coveragerc
 coverallsapp
 cppdbg
@@ -20,7 +18,6 @@ dbuild
 dcmake
 docstrings
 dwith
-elif
 endforeach
 esac
 esbenp
@@ -45,7 +42,6 @@ jinja
 jsonnet
 jsonschema
 kaitai
-libcmocka
 libera
 libjsonnet
 libsonnet
@@ -59,8 +55,6 @@ nojekyll
 noone
 numpydoc
 oneline
-pathlib
-pipefail
 pipx
 preapproved
 pyinstaller
@@ -70,14 +64,12 @@ rdparty
 reflow
 regen
 ripgreprc
-rmtree
 sarif
 satishb
 sbclaude
 schemafile
 shellcheck
 shellformat
-shutil
 snapcraft
 statusline
 strequal
